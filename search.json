@@ -1,0 +1,20 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site",
+    "crumbs": [
+      "Home",
+      "About"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "extendR: User guide",
+    "section": "",
+    "text": "Introduction\nextendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See https://extendr.github.io/ for more information. This website is a user guide to all things extendr, Rust, R and the confluence of all three."
+  }
+]
