@@ -1,6 +1,9 @@
 project:
   type: website
 
+execute:
+  freeze: auto
+
 website:
   title: "extendr"
   reader-mode: true
