@@ -1,0 +1,7 @@
+---
+title: "extendR: User guide"
+---
+
+# Introduction
+
+extendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See <https://extendr.github.io/> for more information. This website is a _user_ guide to all things extendr, Rust, R and the confluence of all three.

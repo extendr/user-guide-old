@@ -1,0 +1,32 @@
+project:
+  type: website
+
+execute:
+  freeze: auto
+
+website:
+  title: "extendr"
+  reader-mode: true
+  repo-url: https://github.com/extendr/user-guide
+  repo-actions: [edit, issue]
+  repo-branch: main
+  sidebar:
+    contents: auto
+    style: "docked"
+    search: true
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+
+
+
