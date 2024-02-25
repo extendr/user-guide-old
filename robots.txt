@@ -1,0 +1,1 @@
+Sitemap: https://extendr.github.io/user-guide/sitemap.xml
