@@ -2,3 +2,105 @@
 title: "Conversion to and from R data"
 ---
 
+One of the key goals with extendr, is to provide a framework that allows you to write Rust functions, that interact with R, without having to know the intricacies within R internals, or even R's C-facilities. However, this is unavoidable if one wishes to understand why the extendr-api is the way it is.
+
+Thus, for introducing extendr, we shall mention facts about R internals, but these are not necessary to keep in mind going forward.
+
+```{r, echo=FALSE}
+# to enable extendr/extendrsrc chunks
+library(rextendr)
+# names(knitr::knit_engines$get())
+```
+
+A fundamental data-type in R is the 32-bit integer, `int` in C, and `i32` in Rust. Passing that type around is essential, and straight forward:
+
+```{extendrsrc}
+#[extendr(use_try_from = true)]
+fn ultimate_answer() -> i32 {
+    return 42_i32;
+}
+```
+
+And now this function is available within your R-session, as the output is `r ultimate_answer()`.
+
+Also, another fundamental data-type in R is `numeric` / `f64`, which we can also pass back and forth uninhibitated, e.g.
+
+```{extendrsrc}
+#[extendr]
+fn return_tau() -> f64 {
+    std::f64::consts::TAU
+} 
+```
+
+where $\tau := 2\pi =$ $`r return_tau()`$.
+
+However, passing data from R to Rust must be done with a bit of care: In R, representing a true integer in literal form requires using `L` after the literal. 
+
+```{extendrsrc}
+#[extendr(use_try_from = true)]
+fn bit_left_shift_once(number: i32) -> i32 {
+    number << 1
+}
+```
+
+This function supposedly is a clever way to multiply by two, however passing `bit_left_shift_once(21.1)` results in
+
+```{r, error=TRUE, echo=FALSE}
+bit_left_shift_once(21.1)
+```
+where `bit_left_shift_once(21)` is `r bit_left_shift_once(21L)`, as expected.
+
+R also has the concept of missing numbers, `NA` encoded within its data-model. However `i32`/`f64` do not natively have a representation for `NA` e.g.
+
+```{r, error=TRUE}
+bit_left_shift_once(NA_integer_)
+bit_left_shift_once(NA_real_)
+bit_left_shift_once(NA)
+```
+
+Instead, we have to rely on extendr's scalar variants of R types, `Rint` / `Rfloat` to encompass the notion of `NA` in our functions:
+
+```{extendrsrc}
+#[extendr(use_try_from = true)]
+fn double_me(value: Rint) -> Rint {
+    if value.is_na() {
+        Rint::na()
+    } else {
+        (value.inner() << 1).into()
+    }
+}
+```
+which means, we can now handle missing values in the arguments
+
+```{r, error=FALSE}
+double_me(NA_integer_)
+double_me(NA_real_)
+double_me(NA)
+```
+
+<!-- this should fial for NA_real_ and NA, but it doesn't! -->
+
+## Vectors
+
+Most data in R are vectors. Scalar values are in fact 1-sized vectors, and
+even lists are defined by a vector-type. A vector type in Rust is `Vec`. A
+`Vec` has a type-information, length, and capacity. This means, that if necessary,
+we may expand any given `Vec`-data to contain more values, and only when capacity
+is exceeded, will there be a reallocation.
+
+Naively, we may define a function like so
+
+```{extendrsrc}
+#[extendr(use_try_from = true)]
+fn repeat_us(mut values: Vec<i32>) -> Vec<i32> {
+    rprintln!("capacity: {}", values.capacity());
+    for v in 0..values.len() {
+        values.push(values[v]);
+    }
+    values
+}
+```
+
+```{r, error=TRUE}
+repeat_us(c(1L,2L,33L))
+```
