@@ -93,14 +93,38 @@ Naively, we may define a function like so
 ```{extendrsrc}
 #[extendr(use_try_from = true)]
 fn repeat_us(mut values: Vec<i32>) -> Vec<i32> {
-    rprintln!("capacity: {}", values.capacity());
-    for v in 0..values.len() {
-        values.push(values[v]);
-    }
+    assert_eq!(values.capacity(), values.len(), "must have zero capacity left");
+    values[0] = 100;
+    values.push(55);
     values
 }
 ```
 
 ```{r, error=TRUE}
-repeat_us(c(1L,2L,33L))
+x <- c(1L, 2L, 33L)
+repeat_us(x)
 ```
+
+Even if the argument is `mut Vec<_>`, what happens is that the R vector gets
+converted to a Rust owned type, and it is that type that we can modify, and augment, with syncing to the original data.
+
+Of course, a slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this allows us to modify the original data, i.e.
+
+```{extendrsrc}
+#[extendr(use_try_from = true)]
+fn zero_middle_element(values: &mut [i32]) {
+    let len = values.len();
+    let middle = len / 2;
+    values[middle] = 0;
+}
+```
+
+```{r}
+x <- c(100L, 200L, 300L)
+zero_middle_element(x)
+x
+```
+
+This is great! If we wanted to insert an `NA` in the middle, we would have had to operate on `&mut [Rint]` instead. 
+
+A limitation of slices , a slice does not allow for extending a vector with new elements. To do this, we have to rely on extendr provided types, that provide a `Vec`-like API to R's vector-types. These are called `Integers`, `Logicals`, `Doubles`, and `Strings`.
