@@ -127,4 +127,4 @@ x
 
 This is great! If we wanted to insert an `NA` in the middle, we would have had to operate on `&mut [Rint]` instead. 
 
-A limitation of slices , a slice does not allow for extending a vector with new elements. To do this, we have to rely on extendr provided types, that provide a `Vec`-like API to R's vector-types. These are called `Integers`, `Logicals`, `Doubles`, and `Strings`.
+A slice is a representation of a sequence of elements that are part of a larger collection. Since they represent only part of a collection (vector, in this case), we cannot add new elements to this. To do so,  we have to rely on extendr provided types, that provide a `Vec`-like API to R's vector-types. These are the `Integers`, `Logicals`, `Doubles`, and `Strings` types.
