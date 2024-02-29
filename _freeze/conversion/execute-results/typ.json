@@ -1,0 +1,15 @@
+{
+  "hash": "f9505dcfe899fb366467fde237addb75",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Conversion to and from R data\"\nformat: typst\n---\n\n\nOne of the key goals with extendr, is to provide a framework that allows you to write Rust functions, that interact with R, without having to know the intricacies within R internals, or even R's C-facilities. However, this is unavoidable if one wishes to understand why the extendr-api is the way it is.\n\nThus, for introducing extendr, we shall mention facts about R internals, but these are not necessary to keep in mind going forward.\n\nA fundamental data-type in R is the 32-bit integer, `int` in C, and `i32` in Rust. Passing that type around is essential, and straight forward:\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(rextendr)\nnames(knitr::knit_engines$get())\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n [1] \"awk\"        \"bash\"       \"coffee\"     \"gawk\"       \"groovy\"    \n [6] \"haskell\"    \"lein\"       \"mysql\"      \"node\"       \"octave\"    \n[11] \"perl\"       \"php\"        \"psql\"       \"Rscript\"    \"ruby\"      \n[16] \"sas\"        \"scala\"      \"sed\"        \"sh\"         \"stata\"     \n[21] \"zsh\"        \"asis\"       \"asy\"        \"block\"      \"block2\"    \n[26] \"bslib\"      \"c\"          \"cat\"        \"cc\"         \"comment\"   \n[31] \"css\"        \"ditaa\"      \"dot\"        \"embed\"      \"eviews\"    \n[36] \"exec\"       \"fortran\"    \"fortran95\"  \"go\"         \"highlight\" \n[41] \"js\"         \"julia\"      \"python\"     \"R\"          \"Rcpp\"      \n[46] \"sass\"       \"scss\"       \"sql\"        \"stan\"       \"targets\"   \n[51] \"tikz\"       \"verbatim\"   \"ojs\"        \"mermaid\"    \"glue\"      \n[56] \"glue_sql\"   \"gluesql\"    \"extendr\"    \"extendrsrc\"\n```\n\n\n:::\n:::\n\n::: {.cell}\n\n```{.rust .cell-code}\n#[extendr(use_try_from = true)]\nfn ultimate_answer() -> i32 {\n    return 42_i32;\n}\n```\n:::\n\n\nAnd now this function is available within your R-session, as the output is 42.\n\nAlso, another fundamental data-type in R is `numeric` / `f64`, which we can also pass back and forth uninhibitated, e.g.\n\n\n::: {.cell}\n\n```{.rust .cell-code}\n#[extendr]\nfn return_tau() -> f64 {\n    std::f64::consts::TAU\n} \n```\n:::\n\n\nwhere $\\tau$\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}
