@@ -1,0 +1,13 @@
+[package]
+name = "user-guide"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[patch.crates-io]
+extendr-api = { path = "/Users/elea/Documents/GitHub/extendr/extendr-api" }
+libR-sys = { path = "/Users/elea/Documents/GitHub/extendr/libR-sys" }
+
+[dependencies]
+extendr-api = "0.6.0"

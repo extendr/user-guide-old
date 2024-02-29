@@ -1,2 +1,9 @@
+# quarto specific .gitignore
 /.quarto/
 /_site/
+# rust specific .gitignore
+target/
+debug/
+Cargo.lock
+**/*.rs.bk
+*.pdb
