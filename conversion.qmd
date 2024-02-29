@@ -108,7 +108,7 @@ repeat_us(x)
 Even if the argument is `mut Vec<_>`, what happens is that the R vector gets
 converted to a Rust owned type, and it is that type that we can modify, and augment, with syncing to the original data.
 
-Of course, a slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this allows us to modify the original data, i.e.
+A slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this allows us to modify the original data in place, i.e.
 
 ```{extendrsrc}
 #[extendr(use_try_from = true)]
