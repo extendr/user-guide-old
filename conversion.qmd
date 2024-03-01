@@ -78,7 +78,27 @@ double_me(NA_real_)
 double_me(NA)
 ```
 
-<!-- this should fial for NA_real_ and NA, but it doesn't! -->
+One may notice here that `NA_real_` was accepted even for an `Rint`. The reason
+for this, is when you specify a type without `&`/`&mut`, the value is coerced
+in a similar way, as R coerces values. In order to have strict type-checking
+during run-time, use `&` / `&mut`, as
+
+
+```{extendrsrc}
+#[extendr(use_try_from = true)]
+fn wrong_input(value: &Rint) -> Rint {
+    value.clone()
+}
+```
+
+```{r, error=TRUE}
+wrong_input(NA_integer_)
+wrong_input(NA_real_)
+wrong_input(21.0)
+wrong_input(21L)
+```
+
+Here, only the last literal is a true `Rint`. 
 
 ## Vectors
 
