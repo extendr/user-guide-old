@@ -26,7 +26,7 @@ And now this function is available within your R-session, as the output is `r ul
 Also, another fundamental data-type in R is `numeric` / `f64`, which we can also pass back and forth uninhibitated, e.g.
 
 ```{extendrsrc}
-#[extendr]
+#[extendr(use_try_from = true)]
 fn return_tau() -> f64 {
     std::f64::consts::TAU
 } 
@@ -108,7 +108,7 @@ repeat_us(x)
 Even if the argument is `mut Vec<_>`, what happens is that the R vector gets
 converted to a Rust owned type, and it is that type that we can modify, and augment, with syncing to the original data.
 
-A slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this allows us to modify the original data in place, i.e.
+Of course, a slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this allows us to modify the original data, i.e.
 
 ```{extendrsrc}
 #[extendr(use_try_from = true)]
@@ -128,3 +128,6 @@ x
 This is great! If we wanted to insert an `NA` in the middle, we would have had to operate on `&mut [Rint]` instead. 
 
 A slice is a representation of a sequence of elements that are part of a larger collection. Since they represent only part of a collection (vector, in this case), we cannot add new elements to this. To do so,  we have to rely on extendr provided types, that provide a `Vec`-like API to R's vector-types. These are the `Integers`, `Logicals`, `Doubles`, and `Strings` types.
+
+## Strings are special
+
