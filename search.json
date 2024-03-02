@@ -1,5 +1,38 @@
 [
   {
+    "objectID": "conversion.html",
+    "href": "conversion.html",
+    "title": "Conversion to and from R data",
+    "section": "",
+    "text": "One of the key goals with extendr, is to provide a framework that allows you to write Rust functions, that interact with R, without having to know the intricacies within R internals, or even R’s C-facilities. However, this is unavoidable if one wishes to understand why the extendr-api is the way it is.\nThus, for introducing extendr, we shall mention facts about R internals, but these are not necessary to keep in mind going forward.\nA fundamental data-type in R is the 32-bit integer, int in C, and i32 in Rust. Passing that type around is essential, and straight forward:\n#[extendr(use_try_from = true)]\nfn ultimate_answer() -&gt; i32 {\n    return 42_i32;\n}\nAnd now this function is available within your R-session, as the output is 42.\nAlso, another fundamental data-type in R is numeric / f64, which we can also pass back and forth uninhibitated, e.g.\n#[extendr(use_try_from = true)]\nfn return_tau() -&gt; f64 {\n    std::f64::consts::TAU\n}\nwhere \\(\\tau := 2\\pi =\\) \\(6.2831853\\).\nHowever, passing data from R to Rust must be done with a bit of care: In R, representing a true integer in literal form requires using L after the literal.\n#[extendr(use_try_from = true)]\nfn bit_left_shift_once(number: i32) -&gt; i32 {\n    number &lt;&lt; 1\n}\nThis function supposedly is a clever way to multiply by two, however passing bit_left_shift_once(21.1) results in\nError in bit_left_shift_once(21.1): Expected an integer or a float representing a whole number, got 21.1\nwhere bit_left_shift_once(21) is 42, as expected.\nR also has the concept of missing numbers, NA encoded within its data-model. However i32/f64 do not natively have a representation for NA e.g.\nbit_left_shift_once(NA_integer_)\n\nError in bit_left_shift_once(NA_integer_): Must not be NA.\n\nbit_left_shift_once(NA_real_)\n\nError in bit_left_shift_once(NA_real_): Must not be NA.\n\nbit_left_shift_once(NA)\n\nError in bit_left_shift_once(NA): Must not be NA.\nInstead, we have to rely on extendr’s scalar variants of R types, Rint / Rfloat to encompass the notion of NA in our functions:\n#[extendr(use_try_from = true)]\nfn double_me(value: Rint) -&gt; Rint {\n    if value.is_na() {\n        Rint::na()\n    } else {\n        (value.inner() &lt;&lt; 1).into()\n    }\n}\nwhich means, we can now handle missing values in the arguments\ndouble_me(NA_integer_)\n\n[1] NA\n\ndouble_me(NA_real_)\n\n[1] NA\n\ndouble_me(NA)\n\n[1] NA\nOne may notice here that NA_real_ was accepted even for an Rint. The reason for this, is when you specify a type without &/&mut, the value is coerced in a similar way, as R coerces values. In order to have strict type-checking during run-time, use & / &mut, as\n#[extendr(use_try_from = true)]\nfn wrong_input(value: &Rint) -&gt; Rint {\n    value.clone()\n}\nwrong_input(NA_integer_)\n\nError in wrong_input(NA_integer_): Must not be NA.\n\nwrong_input(NA_real_)\n\nError in wrong_input(NA_real_): expected 13, got 14\n\nwrong_input(21.0)\n\nError in wrong_input(21): expected 13, got 14\n\nwrong_input(21L)\n\n[1] 21\nHere, only the last literal is a true Rint.",
+    "crumbs": [
+      "Home",
+      "Conversion to and from R data"
+    ]
+  },
+  {
+    "objectID": "conversion.html#vectors",
+    "href": "conversion.html#vectors",
+    "title": "Conversion to and from R data",
+    "section": "Vectors",
+    "text": "Vectors\nMost data in R are vectors. Scalar values are in fact 1-sized vectors, and even lists are defined by a vector-type. A vector type in Rust is Vec. A Vec has a type-information, length, and capacity. This means, that if necessary, we may expand any given Vec-data to contain more values, and only when capacity is exceeded, will there be a reallocation.\nNaively, we may define a function like so\n\n#[extendr(use_try_from = true)]\nfn repeat_us(mut values: Vec&lt;i32&gt;) -&gt; Vec&lt;i32&gt; {\n    assert_eq!(values.capacity(), values.len(), \"must have zero capacity left\");\n    values[0] = 100;\n    values.push(55);\n    values\n}\n\n\nx &lt;- c(1L, 2L, 33L)\nrepeat_us(x)\n\n[1] 100   2  33  55\n\n\nEven if the argument is mut Vec&lt;_&gt;, what happens is that the R vector gets converted to a Rust owned type, and it is that type that we can modify, and augment, with syncing to the original data.\nOf course, a slice e.g. &[i32] / &mut [i32] could be used instead, and this allows us to modify the original data, i.e.\n\n#[extendr(use_try_from = true)]\nfn zero_middle_element(values: &mut [i32]) {\n    let len = values.len();\n    let middle = len / 2;\n    values[middle] = 0;\n}\n\n\nx &lt;- c(100L, 200L, 300L)\nzero_middle_element(x)\nx\n\n[1] 100   0 300\n\n\nThis is great! If we wanted to insert an NA in the middle, we would have had to operate on &mut [Rint] instead.\nA slice is a representation of a sequence of elements that are part of a larger collection. Since they represent only part of a collection (vector, in this case), we cannot add new elements to this. To do so, we have to rely on extendr provided types, that provide a Vec-like API to R’s vector-types. These are the Integers, Logicals, Doubles, and Strings types.",
+    "crumbs": [
+      "Home",
+      "Conversion to and from R data"
+    ]
+  },
+  {
+    "objectID": "conversion.html#strings-are-special",
+    "href": "conversion.html#strings-are-special",
+    "title": "Conversion to and from R data",
+    "section": "Strings are special",
+    "text": "Strings are special",
+    "crumbs": [
+      "Home",
+      "Conversion to and from R data"
+    ]
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
