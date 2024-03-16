@@ -15,7 +15,7 @@ library(rextendr)
 A fundamental data-type in R is the 32-bit integer, `int` in C, and `i32` in Rust. Passing that type around is essential, and straight forward:
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn ultimate_answer() -> i32 {
     return 42_i32;
 }
@@ -26,7 +26,7 @@ And now this function is available within your R-session, as the output is `r ul
 Also, another fundamental data-type in R is `numeric` / `f64`, which we can also pass back and forth uninhibitated, e.g.
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn return_tau() -> f64 {
     std::f64::consts::TAU
 } 
@@ -37,7 +37,7 @@ where $\tau := 2\pi =$ $`r return_tau()`$.
 However, passing data from R to Rust must be done with a bit of care: In R, representing a true integer in literal form requires using `L` after the literal. 
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn bit_left_shift_once(number: i32) -> i32 {
     number << 1
 }
@@ -61,7 +61,7 @@ bit_left_shift_once(NA)
 Instead, we have to rely on extendr's scalar variants of R types, `Rint` / `Rfloat` to encompass the notion of `NA` in our functions:
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn double_me(value: Rint) -> Rint {
     if value.is_na() {
         Rint::na()
@@ -85,7 +85,7 @@ during run-time, use `&` / `&mut`, as
 
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn wrong_input(value: &Rint) -> Rint {
     value.clone()
 }
@@ -111,7 +111,7 @@ is exceeded, will there be a reallocation.
 Naively, we may define a function like so
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn repeat_us(mut values: Vec<i32>) -> Vec<i32> {
     assert_eq!(values.capacity(), values.len(), "must have zero capacity left");
     values[0] = 100;
@@ -131,7 +131,7 @@ converted to a Rust owned type, and it is that type that we can modify, and augm
 Of course, a slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this allows us to modify the original data, i.e.
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn zero_middle_element(values: &mut [i32]) {
     let len = values.len();
     let middle = len / 2;
