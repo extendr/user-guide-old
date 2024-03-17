@@ -86,8 +86,8 @@ during run-time, use `&` / `&mut`, as
 
 ```{extendrsrc}
 #[extendr]
-fn wrong_input(value: &Rint) -> Rint {
-    value.clone()
+fn wrong_input(value: RobjRef<Rint>) -> Rint {
+    value.0.clone()
 }
 ```
 
