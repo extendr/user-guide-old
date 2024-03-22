@@ -12,7 +12,7 @@ library(rextendr)
 # names(knitr::knit_engines$get())
 ```
 
-A fundamental data-type in R is the 32-bit integer, `int` in C, and `i32` in Rust. Passing that type around is essential, and straight forward:
+A fundamental data-type in R is the signed 32-bit integer, `integer` in R, `int` in C, and `i32` in Rust. Passing that type around is essential, and straight forward:
 
 ```{extendrsrc}
 #[extendr]
@@ -33,8 +33,6 @@ fn return_tau() -> f64 {
 ```
 
 where $\tau := 2\pi =$ $`r return_tau()`$.
-
-However, passing data from R to Rust must be done with a bit of care: In R, representing a true integer in literal form requires using `L` after the literal. 
 
 ```{extendrsrc}
 #[extendr]
@@ -78,11 +76,8 @@ double_me(NA_real_)
 double_me(NA)
 ```
 
-One may notice here that `NA_real_` was accepted even for an `Rint`. The reason
-for this, is when you specify a type without `&`/`&mut`, the value is coerced
-in a similar way, as R coerces values. In order to have strict type-checking
-during run-time, use `&` / `&mut`, as
-
+One may notice here that `NA_real_` was accepted even for an `Rint`. The reason for this, is that `extendr` coerces values passed to Rust. In order to have strict type-checking
+during run-time, use `&` / `&mut`, or `RobjRef` / `RobjMut`:
 
 ```{extendrsrc}
 #[extendr]
@@ -95,10 +90,11 @@ fn wrong_input(value: RobjRef<Rint>) -> Rint {
 wrong_input(NA_integer_)
 wrong_input(NA_real_)
 wrong_input(21.0)
+wrong_input(as.integer(21))
 wrong_input(21L)
 ```
 
-Here, only the last literal is a true `Rint`. 
+Here, only the last literal is a true `Rint`.
 
 ## Vectors
 
@@ -123,6 +119,7 @@ fn repeat_us(mut values: Vec<i32>) -> Vec<i32> {
 ```{r, error=TRUE}
 x <- c(1L, 2L, 33L)
 repeat_us(x)
+x
 ```
 
 Even if the argument is `mut Vec<_>`, what happens is that the R vector gets
@@ -132,7 +129,8 @@ Of course, a slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this 
 
 ```{extendrsrc}
 #[extendr]
-fn zero_middle_element(values: &mut [i32]) {
+fn zero_middle_element(mut values: RobjMut<[i32]>) {
+    let values = values.0;
     let len = values.len();
     let middle = len / 2;
     values[middle] = 0;
@@ -142,6 +140,23 @@ fn zero_middle_element(values: &mut [i32]) {
 ```{r}
 x <- c(100L, 200L, 300L)
 zero_middle_element(x)
+x
+```
+
+Similarly, we can cast to a mutable slice directly:
+
+```{extendrsrc}
+#[extendr]
+fn zero_middle_element_slice(mut values: &mut [i32]) {
+    let len = values.len();
+    let middle = len / 2;
+    values[middle] = 0;
+}
+```
+
+```{r}
+x <- c(100L, 200L, 300L)
+zero_middle_element_slice(x)
 x
 ```
 
