@@ -1,12 +1,107 @@
 [
   {
+    "objectID": "getting-started.html",
+    "href": "getting-started.html",
+    "title": "Getting started",
+    "section": "",
+    "text": "To start building R packages using extendr you will need to have R and Rust toolchain installed on your machine.",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#r",
+    "href": "getting-started.html#r",
+    "title": "Getting started",
+    "section": "R",
+    "text": "R\nEnsure that you have a relatively new version of R installed. It is recommended to use a moderately new version (&gt;= 4.2.0).\n\n\n\n\n\n\nNote\n\n\n\nInstall the newest version of R from CRAN\n\n\nThe R package {rextendr} is used to simplify the scaffolding of extendr projects as well as document Rust functions and objects. Install the development version of {rextendr} to have the most up to date changes.\n# install pak if not available\nif (!requireNamespace(\"pak\")) install.packages(\"pak\")\n\n# install development version of rextendr\npak::pak(\"extendr/rextendr\")",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#rust",
+    "href": "getting-started.html#rust",
+    "title": "Getting started",
+    "section": "Rust",
+    "text": "Rust\nNext, ensure that you have Rust installed. extendr has a minimum supported Rust version (msrv) of 1.64. Follow the rustup installation instructions to install Rust.\n\n\n\n\n\n\nTip\n\n\n\nIf you are using Windows, you will also need to install the stable-x86_64-pc-windows-msvc toolchain. From your terminal run the following\nrustup toolchain install stable-x86_64-pc-windows-msvc\nrustup default stable-x86_64-pc-windows-msvc\n\n\nOnce you have installed the Rust toolchain, ensure it is compatible with extendr.\nFrom R run:\n\nrextendr::rust_sitrep()\n\nRust infrastructure sitrep:\n✔ \"rustup\": 1.26.0 (5af9b9484 2023-04-05)\n✔ \"cargo\": 1.79.0-nightly (499a61ce7 2024-03-26)\nℹ host: aarch64-apple-darwin\nℹ toolchains: stable-aarch64-apple-darwin, nightly-aarch64-apple-darwin\n  (default), and 1.64.0-aarch64-apple-darwin\nℹ targets: aarch64-apple-darwin and wasm32-unknown-unknown\n\n\nIf there are no issues reported by the situation report (sitrep), you are ready to start building Rust-powered R packages!",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#post-script-tools-for-writing-rust",
+    "href": "getting-started.html#post-script-tools-for-writing-rust",
+    "title": "Getting started",
+    "section": "Post Script: Tools for Writing Rust",
+    "text": "Post Script: Tools for Writing Rust\nIf you are new to writing Rust, this following section contains some tips.\nFirst, it is recommended to install a configurable code editor like Visual Studio Code (VS Code).\nOnce you have VS Code, or another text editor, installed you will need the rust-analyzer. The rust-analyzer will provide type hinting and auto-completion suggestions. It is very helpful!",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "project-structure.html",
+    "href": "project-structure.html",
+    "title": "extendr project structure",
+    "section": "",
+    "text": "A extendr-powered R package has a fairly unique structure. This section briefly outlines the structure of an extendr package and the important files.\nextendr works by creating a Rust library crate in src/rust that is defined by src/rust/Cargo.toml.\nNote the crate-type = [ 'staticlib' ]. When this library is compiled, it creates a static library which can then be called from R.",
+    "crumbs": [
+      "extendR: User guide",
+      "extendr project structure"
+    ]
+  },
+  {
+    "objectID": "project-structure.html#controlling-exports-to-r-lib.rs",
+    "href": "project-structure.html#controlling-exports-to-r-lib.rs",
+    "title": "extendr project structure",
+    "section": "Controlling exports to R: lib.rs",
+    "text": "Controlling exports to R: lib.rs\nThe lib.rs file determines what will be exposed to your R package. The extendr_module! macro in lib.rs controls what will have wrappers provided to your R package.\nextendr_module! {\n    mod hellorust;\n    fn hello_world;\n}\nThe mod hellorust is the name of the R package. Additional functions, impls, and modules can also be added to this macro.",
+    "crumbs": [
+      "extendR: User guide",
+      "extendr project structure"
+    ]
+  },
+  {
+    "objectID": "project-structure.html#building-the-package-makevars",
+    "href": "project-structure.html#building-the-package-makevars",
+    "title": "extendr project structure",
+    "section": "Building the package: Makevars",
+    "text": "Building the package: Makevars\nWhen creating an R package that uses compiled code, a file called Makevars is used.\n\n\n\n\n\n\nNote\n\n\n\nSee Using Makevars in Writing R Extensions for a thorough discussion.\n\n\nMakevars is used as a preprocessing step for compiling an R package. The files Makevars and Makevars.win compile the Rust library in src/rust, and link to the library.\n\n\n\n\n\n\nTip\n\n\n\nMakevars is used for *nix operating systems and Makevars.win is used for Windows.",
+    "crumbs": [
+      "extendR: User guide",
+      "extendr project structure"
+    ]
+  },
+  {
+    "objectID": "hello-world.html",
+    "href": "hello-world.html",
+    "title": "Hello, world!",
+    "section": "",
+    "text": "Once you have Rust and {rextendr} installed, you can begin creating Rust-powered R packages.\nThe first step to using extendr is to create an R package. It is recommend to create a new package using the package {usethis}.\nusethis::create_package(\"hellorust\")\nIf you are in the RStudio IDE, a new R project will be opened up for you with the file structure of a new R package.\n.\n├── DESCRIPTION\n├── NAMESPACE\n├── R\n└── hellorust.Rproj\nNow that you have a new R package, you can add extendr to it.\nrextendr::use_extendr()\nThis will add an extendr package template to the R packge. We will go through the package structure in more depth shortly.\n.\n├── DESCRIPTION\n├── NAMESPACE\n├── R\n│   └── extendr-wrappers.R\n├── hellorust.Rproj\n└── src\n    ├── Makevars\n    ├── Makevars.ucrt\n    ├── Makevars.win\n    ├── entrypoint.c\n    ├── hellorust-win.def\n    └── rust\n        ├── Cargo.toml\n        └── src\n            └── lib.rs\nInside of the file src/rust/src/lib.rs is a hello world function.\n/// Return string `\"Hello world!\"` to R.\n/// @export\n#[extendr]\nfn hello_world() -&gt; &'static str {\n    \"Hello world!\"\n}\n\n\n\n\n\n\nTip\n\n\n\nNote that roxygen2 can be used with Rust documentation comments /// instead of //.\n\n\nThe function is made available to R via the macro extendr_module!.\n// Macro to generate exports.\n// This ensures exported functions are registered with R.\n// See corresponding C code in `entrypoint.c`.\nextendr_module! {\n    mod hellorust;\n    fn hello_world;\n}\nUse the function rextendr::document() to automatically create R function wrappers to call the Rust function. This will recompile the Rust library.\nrextendr::document()\n#&gt;  rextendr::document()\n#&gt; ✔ Saving changes in the open files.\n#&gt; ℹ Generating extendr wrapper functions for package: hellorust.\n#&gt; ℹ Re-compiling hellorust (debug build)\n#&gt; .... truncated ....\n#&gt; ─  DONE (hellorust)\n#&gt; ✔ Writing 'R/extendr-wrappers.R'\n#&gt; ℹ Updating hellorust documentation\n#&gt; Writing NAMESPACE\n#&gt; ℹ Loading hellorust\n#&gt; Writing NAMESPACE\n#&gt; Writing hellorust-package.Rd\n#&gt; Writing hello_world.Rd\nThe file R/extendr-wrappers.R was updated and now contains\n#' Return string `\"Hello world!\"` to R.\n#' @export\nhello_world &lt;- function() .Call(wrap__hello_world)\nRun devtools::load_all() to make the function available to your session.\ndevtools::load_all()\n#&gt; ℹ Loading hellorust\nThe package hellorust has been loaded and now you can run hello_world()\nhello_world()\n#&gt; \"Hello world!\"",
+    "crumbs": [
+      "extendR: User guide",
+      "Hello, world!"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "extendR: User guide",
+    "section": "",
+    "text": "Introduction\nextendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See https://extendr.github.io/ for more information. This website is a user guide to all things extendr, Rust, R and the confluence of all three."
+  },
+  {
     "objectID": "conversion.html",
     "href": "conversion.html",
     "title": "Conversion to and from R data",
     "section": "",
     "text": "One of the key goals with extendr, is to provide a framework that allows you to write Rust functions, that interact with R, without having to know the intricacies within R internals, or even R’s C-facilities. However, this is unavoidable if one wishes to understand why the extendr-api is the way it is.\nThus, for introducing extendr, we shall mention facts about R internals, but these are not necessary to keep in mind going forward.\nA fundamental data-type in R is the 32-bit integer, int in C, and i32 in Rust. Passing that type around is essential, and straight forward:\n#[extendr(use_try_from = true)]\nfn ultimate_answer() -&gt; i32 {\n    return 42_i32;\n}\nAnd now this function is available within your R-session, as the output is 42.\nAlso, another fundamental data-type in R is numeric / f64, which we can also pass back and forth uninhibitated, e.g.\n#[extendr(use_try_from = true)]\nfn return_tau() -&gt; f64 {\n    std::f64::consts::TAU\n}\nwhere \\(\\tau := 2\\pi =\\) \\(6.2831853\\).\nHowever, passing data from R to Rust must be done with a bit of care: In R, representing a true integer in literal form requires using L after the literal.\n#[extendr(use_try_from = true)]\nfn bit_left_shift_once(number: i32) -&gt; i32 {\n    number &lt;&lt; 1\n}\nThis function supposedly is a clever way to multiply by two, however passing bit_left_shift_once(21.1) results in\nError in bit_left_shift_once(21.1): Expected an integer or a float representing a whole number, got 21.1\nwhere bit_left_shift_once(21) is 42, as expected.\nR also has the concept of missing numbers, NA encoded within its data-model. However i32/f64 do not natively have a representation for NA e.g.\nbit_left_shift_once(NA_integer_)\n\nError in bit_left_shift_once(NA_integer_): Must not be NA.\n\nbit_left_shift_once(NA_real_)\n\nError in bit_left_shift_once(NA_real_): Must not be NA.\n\nbit_left_shift_once(NA)\n\nError in bit_left_shift_once(NA): Must not be NA.\nInstead, we have to rely on extendr’s scalar variants of R types, Rint / Rfloat to encompass the notion of NA in our functions:\n#[extendr(use_try_from = true)]\nfn double_me(value: Rint) -&gt; Rint {\n    if value.is_na() {\n        Rint::na()\n    } else {\n        (value.inner() &lt;&lt; 1).into()\n    }\n}\nwhich means, we can now handle missing values in the arguments\ndouble_me(NA_integer_)\n\n[1] NA\n\ndouble_me(NA_real_)\n\n[1] NA\n\ndouble_me(NA)\n\n[1] NA\nOne may notice here that NA_real_ was accepted even for an Rint. The reason for this, is when you specify a type without &/&mut, the value is coerced in a similar way, as R coerces values. In order to have strict type-checking during run-time, use & / &mut, as\n#[extendr(use_try_from = true)]\nfn wrong_input(value: &Rint) -&gt; Rint {\n    value.clone()\n}\nwrong_input(NA_integer_)\n\nError in wrong_input(NA_integer_): Must not be NA.\n\nwrong_input(NA_real_)\n\nError in wrong_input(NA_real_): expected 13, got 14\n\nwrong_input(21.0)\n\nError in wrong_input(21): expected 13, got 14\n\nwrong_input(21L)\n\n[1] 21\nHere, only the last literal is a true Rint.",
     "crumbs": [
-      "Home",
+      "extendR: User guide",
       "Conversion to and from R data"
     ]
   },
@@ -17,7 +112,7 @@
     "section": "Vectors",
     "text": "Vectors\nMost data in R are vectors. Scalar values are in fact 1-sized vectors, and even lists are defined by a vector-type. A vector type in Rust is Vec. A Vec has a type-information, length, and capacity. This means, that if necessary, we may expand any given Vec-data to contain more values, and only when capacity is exceeded, will there be a reallocation.\nNaively, we may define a function like so\n\n#[extendr(use_try_from = true)]\nfn repeat_us(mut values: Vec&lt;i32&gt;) -&gt; Vec&lt;i32&gt; {\n    assert_eq!(values.capacity(), values.len(), \"must have zero capacity left\");\n    values[0] = 100;\n    values.push(55);\n    values\n}\n\n\nx &lt;- c(1L, 2L, 33L)\nrepeat_us(x)\n\n[1] 100   2  33  55\n\n\nEven if the argument is mut Vec&lt;_&gt;, what happens is that the R vector gets converted to a Rust owned type, and it is that type that we can modify, and augment, with syncing to the original data.\nOf course, a slice e.g. &[i32] / &mut [i32] could be used instead, and this allows us to modify the original data, i.e.\n\n#[extendr(use_try_from = true)]\nfn zero_middle_element(values: &mut [i32]) {\n    let len = values.len();\n    let middle = len / 2;\n    values[middle] = 0;\n}\n\n\nx &lt;- c(100L, 200L, 300L)\nzero_middle_element(x)\nx\n\n[1] 100   0 300\n\n\nThis is great! If we wanted to insert an NA in the middle, we would have had to operate on &mut [Rint] instead.\nA slice is a representation of a sequence of elements that are part of a larger collection. Since they represent only part of a collection (vector, in this case), we cannot add new elements to this. To do so, we have to rely on extendr provided types, that provide a Vec-like API to R’s vector-types. These are the Integers, Logicals, Doubles, and Strings types.",
     "crumbs": [
-      "Home",
+      "extendR: User guide",
       "Conversion to and from R data"
     ]
   },
@@ -28,26 +123,8 @@
     "section": "Strings are special",
     "text": "Strings are special",
     "crumbs": [
-      "Home",
+      "extendR: User guide",
       "Conversion to and from R data"
     ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site",
-    "crumbs": [
-      "Home",
-      "About"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "extendR: User guide",
-    "section": "",
-    "text": "Introduction\nextendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See https://extendr.github.io/ for more information. This website is a user guide to all things extendr, Rust, R and the confluence of all three."
   }
 ]
