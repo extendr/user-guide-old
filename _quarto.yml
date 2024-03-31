@@ -17,6 +17,7 @@ website:
       - hello-world.qmd
       - project-structure.qmd
       - conversion.qmd
+      - data-types.qmd
     style: "docked"
     search: true
   navbar:
