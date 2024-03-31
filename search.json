@@ -77,6 +77,13 @@
     ]
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "extendR: User guide",
+    "section": "",
+    "text": "Introduction\nextendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See https://extendr.github.io/ for more information. This website is a user guide to all things extendr, Rust, R and the confluence of all three."
+  },
+  {
     "objectID": "hello-world.html",
     "href": "hello-world.html",
     "title": "Hello, world!",
@@ -88,11 +95,70 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "extendR: User guide",
+    "objectID": "data-types.html",
+    "href": "data-types.html",
+    "title": "R to Rust type mapping",
     "section": "",
-    "text": "Introduction\nextendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See https://extendr.github.io/ for more information. This website is a user guide to all things extendr, Rust, R and the confluence of all three."
+    "text": "extendr is allows us to create a bridge between R and Rust. When writing a function in Rust that is intended to be called from R, it is important that the input types be R types. There are many types of objects in R (almost) all of which are available in extendr via a wrapper struct.\nThe below lists the extendr structs that wrap R object types. These types can be used as function arguments or return values.",
+    "crumbs": [
+      "extendR: User guide",
+      "R to Rust type mapping"
+    ]
+  },
+  {
+    "objectID": "data-types.html#scalar-types",
+    "href": "data-types.html#scalar-types",
+    "title": "R to Rust type mapping",
+    "section": "Scalar types",
+    "text": "Scalar types\n\n\n\nR type\nextendr type\nRust type\n\n\n\n\ninteger(1)\nRint\ni32\n\n\ndouble(1)\nRfloat\nf64\n\n\nlogical(1)\nRbool\nbool\n\n\ncomplex(1)\nRcplx\nComplex&lt;f64&gt;\n\n\ncharacter(1)\nRstr\nString",
+    "crumbs": [
+      "extendR: User guide",
+      "R to Rust type mapping"
+    ]
+  },
+  {
+    "objectID": "data-types.html#vector-types",
+    "href": "data-types.html#vector-types",
+    "title": "R to Rust type mapping",
+    "section": "Vector types",
+    "text": "Vector types\n\n\n\nR type\nextendr type\nextendr scalar type\nC API Type\n\n\n\n\ninteger()\nIntegers\nRint\nINTSXP\n\n\ndouble()\nDoubles\nRfloat\nREALSXP\n\n\nlogical()\nLogicals\nRbool\nLGLSXP\n\n\ncomplex()\nComplexes\nRcplx\nCPLXSXP\n\n\ncharacter()\nStrings\nRstr\nSTRSXP\n\n\nraw()\nRaw\n&[u8]\nRAWSXP\n\n\nlist()\nList\nRobj\nVECSXP",
+    "crumbs": [
+      "extendR: User guide",
+      "R to Rust type mapping"
+    ]
+  },
+  {
+    "objectID": "data-types.html#other-types",
+    "href": "data-types.html#other-types",
+    "title": "R to Rust type mapping",
+    "section": "Other types",
+    "text": "Other types\n\nEnvironment (ENVSXP)\nExpressions (EXPRSXP)\nExternalPtr (EXTPTRSXP)\nFunction (CLOSSXP)\nLanguage (LANGSXP)\nRArray\nPairlist (LISTSXP)\nPromise (PROMSXP)\nS4 (S4SXP)",
+    "crumbs": [
+      "extendR: User guide",
+      "R to Rust type mapping"
+    ]
+  },
+  {
+    "objectID": "data-types.html#using-rust-library-types-vs-r-native-types",
+    "href": "data-types.html#using-rust-library-types-vs-r-native-types",
+    "title": "R to Rust type mapping",
+    "section": "Using Rust library types vs R-native types",
+    "text": "Using Rust library types vs R-native types",
+    "crumbs": [
+      "extendR: User guide",
+      "R to Rust type mapping"
+    ]
+  },
+  {
+    "objectID": "data-types.html#returning-rust-values-to-r",
+    "href": "data-types.html#returning-rust-values-to-r",
+    "title": "R to Rust type mapping",
+    "section": "Returning Rust values to R",
+    "text": "Returning Rust values to R",
+    "crumbs": [
+      "extendR: User guide",
+      "R to Rust type mapping"
+    ]
   },
   {
     "objectID": "conversion.html",

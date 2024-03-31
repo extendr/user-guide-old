@@ -2,22 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://extendr.github.io/user-guide/getting-started.html</loc>
-    <lastmod>2024-03-31T05:39:14.912Z</lastmod>
+    <lastmod>2024-03-31T18:36:36.296Z</lastmod>
   </url>
   <url>
     <loc>https://extendr.github.io/user-guide/project-structure.html</loc>
-    <lastmod>2024-03-31T05:39:14.912Z</lastmod>
-  </url>
-  <url>
-    <loc>https://extendr.github.io/user-guide/hello-world.html</loc>
-    <lastmod>2024-03-31T05:39:14.912Z</lastmod>
+    <lastmod>2024-03-31T18:36:36.296Z</lastmod>
   </url>
   <url>
     <loc>https://extendr.github.io/user-guide/index.html</loc>
-    <lastmod>2024-03-31T05:39:14.912Z</lastmod>
+    <lastmod>2024-03-31T18:36:36.296Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/hello-world.html</loc>
+    <lastmod>2024-03-31T18:36:36.296Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/data-types.html</loc>
+    <lastmod>2024-03-31T18:36:36.292Z</lastmod>
   </url>
   <url>
     <loc>https://extendr.github.io/user-guide/conversion.html</loc>
-    <lastmod>2024-03-31T05:39:14.912Z</lastmod>
+    <lastmod>2024-03-31T18:36:36.292Z</lastmod>
   </url>
 </urlset>
