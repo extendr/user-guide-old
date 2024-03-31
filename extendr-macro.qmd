@@ -12,6 +12,14 @@ The `#[extendr]` attribute macro indicates that an item should be made available
 library(rextendr)
 ```
 
+## Exporting functions 
+
+```rust
+
+```
+
+## `ToVectorValue` trait
+
 ## Exporting `impl` blocks
 
 The other supported item that can be made available to R is an [`impl`](https://doc.rust-lang.org/std/keyword.impl.html) block. 
@@ -22,7 +30,7 @@ You can only add an inherent implementation on a type that you have own and not 
 :::
 
 
-Says you have an enum that specifies a type of shape. This enum alone cannot be returned to R. For example, the following code will result in a compilation error
+Say you have an enum that specifies a type of shape. This enum alone cannot be returned to R. For example, the following code will result in a compilation error
 
 ```rust
 #[derive(Debug)]
@@ -90,3 +98,12 @@ impl Shape {
 tri <- Shape$new("triangle")
 tri
 ```
+
+## `impl` ownership
+
+Adding the `#[extendr]` macro to an impl allows the struct or enum to be made available to R as an external pointer. Once you create an external pointer, that is then owned by R. So you can only get references to it or mutable references. If you need an owned version of the type, then you will need to clone.
+
+## `ExternalPtr`: returning arbitrary Rust types 
+
+In the event that you need to return a Rust type to R that doesnt have a compatible impl or is a type that you don't own, you can use `ExternalPtr<T>`.
+
