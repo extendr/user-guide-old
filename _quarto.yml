@@ -12,14 +12,16 @@ website:
   repo-actions: [edit, issue]
   repo-branch: main
   sidebar:
-    contents: auto
+    contents: 
+      - getting-started.qmd
+      - hello-world.qmd
+      - project-structure.qmd
+      - conversion.qmd
     style: "docked"
     search: true
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - index.qmd
 
 format:
   html:

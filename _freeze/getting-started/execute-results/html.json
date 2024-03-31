@@ -1,0 +1,15 @@
+{
+  "hash": "3ee18dc29760e87ca76a4ec932b51a0b",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Getting started\n---\n\n\nTo start building R packages using extendr you will need to have R and Rust toolchain installed on your machine. \n\n::: callout-tip\nJoin the [Discord server](https://discord.gg/KM3Bhwt3uk) server to chat with other extendr users and the maintainers. \n:::\n\n## R \n\nEnsure that you have a relatively new version of R installed. It is recommended to use a moderately new version (>= 4.2.0). \n\n::: callout-note\nInstall the newest version of R from [CRAN](https://cran.r-project.org/)\n:::\n\nThe R package `{rextendr}` is used to simplify the scaffolding of extendr projects as well as document Rust functions and objects. Install the development version of `{rextendr}` to have the most up to date changes.\n\n```r\n# install pak if not available\nif (!requireNamespace(\"pak\")) install.packages(\"pak\")\n\n# install development version of rextendr\npak::pak(\"extendr/rextendr\")\n```\n\n## Rust\n\nNext, ensure that you have Rust installed. extendr has a minimum supported Rust version (msrv) of `1.64`. Follow the [rustup installation instructions](https://www.rust-lang.org/tools/install) to install Rust.\n\n::: callout-tip\nIf you are using Windows, you will also need to install the `stable-x86_64-pc-windows-msvc` toolchain. From your terminal run the following\n\n```shell\nrustup toolchain install stable-x86_64-pc-windows-msvc\nrustup default stable-x86_64-pc-windows-msvc\n```\n\n:::\n\nOnce you have installed the Rust toolchain, ensure it is compatible with extendr.\n\n\nFrom R run: \n\n\n::: {.cell}\n\n```{.r .cell-code}\nrextendr::rust_sitrep()\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nRust infrastructure sitrep:\n✔ \"rustup\": 1.26.0 (5af9b9484 2023-04-05)\n✔ \"cargo\": 1.79.0-nightly (499a61ce7 2024-03-26)\nℹ host: aarch64-apple-darwin\nℹ toolchains: stable-aarch64-apple-darwin, nightly-aarch64-apple-darwin\n  (default), and 1.64.0-aarch64-apple-darwin\nℹ targets: aarch64-apple-darwin and wasm32-unknown-unknown\n```\n\n\n:::\n:::\n\n\nIf there are no issues reported by the situation report (sitrep), you are ready to start building Rust-powered R packages! \n\n\n------------\n\n\n## Post Script: Tools for Writing Rust \n\nIf you are new to writing Rust, this following section contains some tips. \n\nFirst, it is recommended to install a configurable code editor like [Visual Studio Code (VS Code)](https://code.visualstudio.com/download).\n\nOnce you have VS Code, or another text editor, installed you will need the [`rust-analyzer`](https://rust-analyzer.github.io/). The rust-analyzer will provide type hinting and auto-completion suggestions. It is _very_ helpful!\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

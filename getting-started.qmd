@@ -1,0 +1,65 @@
+---
+title: Getting started
+---
+
+To start building R packages using extendr you will need to have R and Rust toolchain installed on your machine. 
+
+::: callout-tip
+Join the [Discord server](https://discord.gg/KM3Bhwt3uk) server to chat with other extendr users and the maintainers. 
+:::
+
+## R 
+
+Ensure that you have a relatively new version of R installed. It is recommended to use a moderately new version (>= 4.2.0). 
+
+::: callout-note
+Install the newest version of R from [CRAN](https://cran.r-project.org/)
+:::
+
+The R package `{rextendr}` is used to simplify the scaffolding of extendr projects as well as document Rust functions and objects. Install the development version of `{rextendr}` to have the most up to date changes.
+
+```r
+# install pak if not available
+if (!requireNamespace("pak")) install.packages("pak")
+
+# install development version of rextendr
+pak::pak("extendr/rextendr")
+```
+
+## Rust
+
+Next, ensure that you have Rust installed. extendr has a minimum supported Rust version (msrv) of `1.64`. Follow the [rustup installation instructions](https://www.rust-lang.org/tools/install) to install Rust.
+
+::: callout-tip
+If you are using Windows, you will also need to install the `stable-x86_64-pc-windows-msvc` toolchain. From your terminal run the following
+
+```shell
+rustup toolchain install stable-x86_64-pc-windows-msvc
+rustup default stable-x86_64-pc-windows-msvc
+```
+
+:::
+
+Once you have installed the Rust toolchain, ensure it is compatible with extendr.
+
+
+From R run: 
+
+```{r}
+rextendr::rust_sitrep()
+```
+
+If there are no issues reported by the situation report (sitrep), you are ready to start building Rust-powered R packages! 
+
+
+------------
+
+
+## Post Script: Tools for Writing Rust 
+
+If you are new to writing Rust, this following section contains some tips. 
+
+First, it is recommended to install a configurable code editor like [Visual Studio Code (VS Code)](https://code.visualstudio.com/download).
+
+Once you have VS Code, or another text editor, installed you will need the [`rust-analyzer`](https://rust-analyzer.github.io/). The rust-analyzer will provide type hinting and auto-completion suggestions. It is _very_ helpful!
+
