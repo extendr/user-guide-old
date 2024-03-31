@@ -38,7 +38,7 @@ The below lists the extendr structs that wrap R object types. These types can be
 - [`Function`](https://extendr.github.io/extendr/extendr_api/wrapper/function/struct.Function.html) (`CLOSSXP`)
 - [`Language`](https://extendr.github.io/extendr/extendr_api/wrapper/lang/struct.Language.html)
 - [`RArray`](https://extendr.github.io/extendr/extendr_api/wrapper/matrix/struct.RArray.html)
-- [`Pairlist`](https://extendr.github.io/extendr/extendr_api/wrapper/pairlist/struct.Pairlist.html)
+- [`Pairlist`](https://extendr.github.io/extendr/extendr_api/wrapper/pairlist/struct.Pairlist.html) (`LISTSXP`)
 - [`Promise`](https://extendr.github.io/extendr/extendr_api/wrapper/promise/struct.Promise.html) (`PROMSXP`)
 - [`S4`](https://extendr.github.io/extendr/extendr_api/wrapper/s4/struct.S4.html)
 
