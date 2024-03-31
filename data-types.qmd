@@ -1,0 +1,47 @@
+---
+title: R to Rust type mapping
+---
+
+extendr is allows us to create a bridge between R and Rust. When writing a function in Rust that is intended to be called from R, it is important that the input types be R types. There are many types of objects in R (almost) all of which are available in extendr via a wrapper struct. 
+
+The below lists the extendr structs that wrap R object types. These types can be used as function arguments or return values. 
+
+## Scalar types
+
+| R type | extendr type | Rust type | 
+| ------| -----------| ----------|
+| `integer(1)` | `Rint` |  `i32` |
+| `double(1)` | `Rfloat` |  `f64` | 
+| `logical(1)` | `Rbool` | `bool` |
+| `complex(1)` | `Rcplx` | `Complex<f64>` | 
+| `character(1)` |  `Rstr` | `String` | 
+
+## Vector types
+
+| R type        | extendr type | extendr scalar type | C API Type |
+|-------------|------------|-------------------|----------|
+| `integer()`   | `Integers`   |  `Rint`  | `INTSXP`  | 
+| `double()`    | `Doubles`    | `Rfloat` | `REALSXP` |
+| `logical()`   | `Logicals`   | `Rbool`  | `LGLSXP`  |
+| `complex()`   | `Complexes`  | `Rcplx`  | `CPLXSXP` |
+| `character()` | `Strings`    |  `Rstr`  | `STRSXP`  |
+| `raw()`       | `Raw`        |  `&[u8]` | `RAWSXP`  |
+| `list()`      | `List`       | `Robj`   | `VECSXP`  |
+
+
+## Other types 
+
+
+- [`Environment`](https://extendr.github.io/extendr/extendr_api/wrapper/environment/struct.Environment.html) (`ENVSXP`)
+- [`Expressions`](https://extendr.github.io/extendr/extendr_api/wrapper/expr/struct.Expressions.html) (`EXPRSXP`)
+- [`ExternalPtr`](https://extendr.github.io/extendr/extendr_api/wrapper/externalptr/struct.ExternalPtr.html)
+- [`Function`](https://extendr.github.io/extendr/extendr_api/wrapper/function/struct.Function.html) (`CLOSSXP`)
+- [`Language`](https://extendr.github.io/extendr/extendr_api/wrapper/lang/struct.Language.html)
+- [`RArray`](https://extendr.github.io/extendr/extendr_api/wrapper/matrix/struct.RArray.html)
+- [`Pairlist`](https://extendr.github.io/extendr/extendr_api/wrapper/pairlist/struct.Pairlist.html)
+- [`Promise`](https://extendr.github.io/extendr/extendr_api/wrapper/promise/struct.Promise.html) (`PROMSXP`)
+- [`S4`](https://extendr.github.io/extendr/extendr_api/wrapper/s4/struct.S4.html)
+
+## Using Rust library types vs R-native types
+
+## Returning Rust values to R
