@@ -1,0 +1,92 @@
+---
+title: "Making Rust items available to R"
+---
+
+The power of extendr is in its ability to use utilize the power of Rust from R. The `#[extendr]` macro is what determines what is exported to R from Rust. This section covers the basic usage of the `#[extendr]` macro. 
+
+[`#[extendr]`](https://extendr.github.io/extendr/extendr_api/attr.extendr.html) is what is referred to as an [attribute macro](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros) (which itself is a type of [procedural macro](https://doc.rust-lang.org/reference/procedural-macros.html)). An attribute macro is attached to an [item](https://doc.rust-lang.org/reference/items.html) such as a function, `struct`, `enum`, or `impl`. 
+
+The `#[extendr]` attribute macro indicates that an item should be made available to R. It _can only be used_ with a function or an impl block. 
+
+```{r, include = FALSE}
+library(rextendr)
+```
+
+## Exporting `impl` blocks
+
+The other supported item that can be made available to R is an [`impl`](https://doc.rust-lang.org/std/keyword.impl.html) block. 
+`impl` is a keyword that allows you to _implement_ a trait or an inherent implementation. The `#[extendr]` macro works with inherent implementations. These are `impl`s on a type such as an `enum` or a `struct`. 
+
+::: callout-note
+You can only add an inherent implementation on a type that you have own and not provided by a third party crate. This would violate the [orphan rules](https://github.com/Ixrec/rust-orphan-rules?tab=readme-ov-file#what-are-the-orphan-rules).
+:::
+
+
+Says you have an enum that specifies a type of shape. This enum alone cannot be returned to R. For example, the following code will result in a compilation error
+
+```rust
+#[derive(Debug)]
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+#[extendr]
+fn make_shape(shape: &str) -> Shape {
+    match shape {
+        "triangle" => Shape::Triangle,
+        "rectangle" => Shape::Rectangle,
+        "pentagon" => Shape::Pentagon,
+        "hexagon" => Shape::Hexagon,
+        &_ => unimplemented!()
+    }
+}
+```
+```
+error[E0277]: the trait bound `Shape: ToVectorValue` is not satisfied
+  --> src/lib.rs:19:1
+   |
+19 | #[extendr]
+   | ^^^^^^^^^^ the trait `ToVectorValue` is not implemented for `Shape`, which is required by `extendr_api::Robj: From<Shape>`
+   |
+```
+However, if an impl block is added to the `Shape` enum, it
+```{extendrsrc}
+#[derive(Debug)]
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+#[extendr]
+impl Shape {
+    fn new(x: &str) -> Self {
+        match x {
+            "triangle" => Self::Triangle,
+            "rectangle" => Self::Rectangle,
+            "pentagon" => Self::Pentagon,
+            "hexagon" => Self::Hexagon,
+            &_ => unimplemented!(),
+        }
+    }
+
+    fn n_coords(&self) -> usize {
+        match &self {
+            Shape::Triangle => 3,
+            Shape::Rectangle => 4,
+            Shape::Pentagon => 4,
+            Shape::Hexagon => 5,
+        }
+    }
+}
+```
+
+
+```{r}
+tri <- Shape$new("triangle")
+tri
+```
