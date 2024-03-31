@@ -1,0 +1,52 @@
+---
+title: extendr project structure
+--- 
+
+A extendr-powered R package has a fairly unique structure.  This section briefly outlines the structure of an extendr package and the important files.
+
+extendr works by creating a Rust library crate in `src/rust` that is defined by `src/rust/Cargo.toml`. 
+
+```{.toml filename="Cargo.toml"}
+[package]
+name = 'hellorust'
+publish = false
+version = '0.1.0'
+edition = '2021'
+
+[lib]
+crate-type = [ 'staticlib' ]
+name = 'hellorust'
+
+[dependencies]
+extendr-api = '*'
+```
+
+Note the `crate-type = [ 'staticlib' ]`. When this library is compiled, it creates a static library which can then be called from R. 
+
+
+## Controlling exports to R: `lib.rs`
+
+The `lib.rs` file determines what will be exposed to your R package. The `extendr_module!` macro in `lib.rs` controls what will have wrappers provided to your R package. 
+
+```toml
+extendr_module! {
+    mod hellorust;
+    fn hello_world;
+}
+```
+
+The `mod hellorust` is the name of the R package. Additional functions, `impl`s, and modules can also be added to this macro. 
+
+## Building the package: `Makevars`
+
+When creating an R package that uses compiled code, a file called `Makevars` is used. 
+
+::: callout-note
+See [Using Makevars](https://cran.r-project.org/doc/manuals/R-exts.html#Using-Makevars) in Writing R Extensions for a thorough discussion.
+:::
+
+`Makevars` is used as a preprocessing step for compiling an R package. The files `Makevars` and `Makevars.win` compile the Rust library in `src/rust`, and link to the library. 
+
+::: callout-tip
+`Makevars` is used for *nix operating systems and `Makevars.win` is used for Windows. 
+::: 
