@@ -1,0 +1,376 @@
+---
+title: "Making Rust items available to R"
+---
+
+The power of extendr is in its ability to use Rust from R. The `#[extendr]` macro is what determines what is exported to R from Rust. This section covers the basic usage of the `#[extendr]` macro. 
+
+[`#[extendr]`](https://extendr.github.io/extendr/extendr_api/attr.extendr.html) is what is referred to as an [attribute macro](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros) (which itself is a type of [procedural macro](https://doc.rust-lang.org/reference/procedural-macros.html)). An attribute macro is attached to an [item](https://doc.rust-lang.org/reference/items.html) such as a function, `struct`, `enum`, or `impl`. 
+
+The `#[extendr]` attribute macro indicates that an item should be made available to R. However, it _can only be used_ with a function or an impl block. 
+
+```{r, include = FALSE}
+library(rextendr)
+```
+
+## Exporting functions 
+
+In order to make a function available to R, two things must happen. First, the `#[extendr]` macro must be attached to the function. For example, you can create a function `answer_to_life()`
+
+::: {.callout-note collapse="true"}
+In the Hitchhiker's Guide to the Galaxy, the number 42 is the answer to the universe. See this fun [article from Scientific American](https://www.scientificamerican.com/article/for-math-fans-a-hitchhikers-guide-to-the-number-42/)
+:::
+
+```rust
+#[extendr]
+fn answer_to_life() -> i32 {
+    42
+}
+```
+
+By adding the `#[extendr]` attribute macro to the `answer_to_life()` function, we are indicating that this function has to be compatible with R. This alone, however, does not make the function available to R. It must be made available via the `extendr_module! {}` macro in `lib.rs`.
+
+```rust
+extendr_module! {
+    mod hellorust;
+    fn answer_to_life;
+}
+```
+
+::: callout-tip
+Everything that is made available in the `extendr_module! {}` macro in `lib.rs` must be compatible with R as indicated by the `#[extendr]` macro. Note that the module name `mod hellorust` must be the name of the R package that this is part of. If you have created your package with `rextendr::use_extendr()` this should be set automatically. See [Hello, world!](./hello-world.qmd).
+:::
+
+What happens if you try and return something that cannot be represented by R? Take this example, an enum `Shape` is defined and a function takes a string `&str`. Based on the value of the arugment, an enum variant is returned. 
+
+```rust
+#[derive(Debug)]
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+#[extendr]
+fn make_shape(shape: &str) -> Shape {
+    match shape {
+        "triangle" => Shape::Triangle,
+        "rectangle" => Shape::Rectangle,
+        "pentagon" => Shape::Pentagon,
+        "hexagon" => Shape::Hexagon,
+        &_ => unimplemented!()
+    }
+}
+```
+
+When this is compiled, an error occurs because extendr does not know how to convert the `Shape` enum into something that R can use. The error is fairly informative! 
+
+```
+#[extendr]
+   | ^^^^^^^^^^ the trait `ToVectorValue` is not implemented for `Shape`, which is required by `extendr_api::Robj: From<Shape>`
+   |
+   = help: the following other types implement trait `ToVectorValue`:
+             bool
+             i8
+             i16
+             i32
+             i64
+             usize
+             u8
+             u16
+           and 45 others
+   = note: required for `extendr_api::Robj` to implement `From<Shape>`
+   = note: this error originates in the attribute macro `extendr` 
+```
+
+It tells you that `Shape` does not implement the `ToVectorValue` trait. The `ToVectorValue` trait is what enables items from Rust to be returned to R.
+
+## `ToVectorValue` trait
+
+In order for an item to be returned from a function marked with the `#[extendr]` attribute macro, it must be able to be turned into an R object. In extendr, the struct `Robj` is a catch all for any type of R object. 
+
+::: callout-note
+For those familiar with PyO3, the `Robj` struct is similar in concept to the [`PyAny`](https://docs.rs/pyo3/latest/pyo3/types/struct.PyAny.html) struct.
+::: 
+
+The `ToVectorValue` trait is what is used to convert Rust items into R objects. The trait is implemented on a number of standard Rust types such as `i32`, `f64`, `usize`, `String` and more (see [all foreign implementations here](https://extendr.github.io/extendr/extendr_api/robj/into_robj/trait.ToVectorValue.html#foreign-impls)) which enables these functions to be returned from a Rust function marked with `#[extendr]`. 
+
+::: callout-note
+In essence, all items that are returned from a function must be able to be turned into an `Robj`. Other extendr types such as `List`, for example, have a `From<T> for Robj` implementation that defines how it is converted into an `Robj`.
+:::
+
+This means that with a little extra work, the `Shape` enum can be returned to R. To do so, the `#[extendr]` macro needs to be added to an impl block.  
+
+
+## Exporting `impl` blocks
+
+The other supported item that can be made available to R is an [`impl`](https://doc.rust-lang.org/std/keyword.impl.html) block. 
+`impl` is a keyword that allows you to _implement_ a trait or an inherent implementation. The `#[extendr]` macro works with inherent implementations. These are `impl`s on a type such as an `enum` or a `struct`. extendr _does not_ support using `#[extendr]` on trait impls. 
+
+::: callout-note
+You can only add an inherent implementation on a type that you have own and not provided by a third party crate. This would violate the [orphan rules](https://github.com/Ixrec/rust-orphan-rules?tab=readme-ov-file#what-are-the-orphan-rules).
+:::
+
+Continuing with the `Shape` example, this enum alone cannot be returned to R. For example, the following code will result in a compilation error
+
+```rust
+#[derive(Debug)]
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+#[extendr]
+fn make_shape(shape: &str) -> Shape {
+    match shape {
+        "triangle" => Shape::Triangle,
+        "rectangle" => Shape::Rectangle,
+        "pentagon" => Shape::Pentagon,
+        "hexagon" => Shape::Hexagon,
+        &_ => unimplemented!()
+    }
+}
+```
+```
+error[E0277]: the trait bound `Shape: ToVectorValue` is not satisfied
+  --> src/lib.rs:19:1
+   |
+19 | #[extendr]
+   | ^^^^^^^^^^ the trait `ToVectorValue` is not implemented for `Shape`, which is required by `extendr_api::Robj: From<Shape>`
+   |
+```
+
+However, if an impl block is added to the `Shape` enum, it can be returned to R. 
+
+```{extendrsrc}
+#[derive(Debug)]
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+#[extendr]
+impl Shape {
+    fn new(x: &str) -> Self {
+        match x {
+            "triangle" => Self::Triangle,
+            "rectangle" => Self::Rectangle,
+            "pentagon" => Self::Pentagon,
+            "hexagon" => Self::Hexagon,
+            &_ => unimplemented!(),
+        }
+    }
+
+    fn n_coords(&self) -> usize {
+        match &self {
+            Shape::Triangle => 3,
+            Shape::Rectangle => 4,
+            Shape::Pentagon => 4,
+            Shape::Hexagon => 5,
+        }
+    }
+}
+```
+
+In this example two new methods are added to the `Shape` enum. The first `new()` is like the `make_shape()` function that was shown earlier: it takes a `&str` and returns an enum variant. Now that the enum has an `impl` block with `#[extendr]` attribute macro, it can be exported to R by inclusion in the `extendr_module! {}` macro.
+
+```rust
+extendr_module! {
+    mod hellorust;
+    impl Shape;
+}
+```
+
+Doing so creates an environment in your package called `Shape`. The environment contains all of the methods that are available to you. 
+
+::: callout-tip
+There are use cases where you may not want to expose any methods but do want to make it possible to return a struct or an enum to the R. You can do this by adding an empty impl block with the `#[extendr]` attribute macro. 
+::: 
+
+If you run `as.list(Shape)` you will see that there are two functions in the environment which enable you to call the methods defined in the impl block. You might think that this feel like an [R6 object](https://r6.r-lib.org/articles/Introduction.html) and you'd be right because an R6 object essentially is an environment! 
+
+```{r}
+as.list(Shape)
+```
+
+Calling the `new()` method instantiates a new enum variant. 
+
+```{r}
+tri <- Shape$new("triangle")
+tri
+```
+
+The newly made `tri` object is an [external pointer](https://cran.r-project.org/doc/manuals/R-exts.html#External-pointers-and-weak-references) to the `Shape` enum in Rust. This pointer has the same methods as the Shape environment—though they cannot be seen in the same way. For example you can run the `n_coords()` method on the newly created object.
+
+```{r}
+tri$n_coords()
+```
+
+::: callout-tip
+To make the methods visible to the `Shape` class you can define a `.DollarNames` method which will allow you to preview the methods and attributes when using the `$` syntax. This is very handy to define when making an impl a core part of your package.
+
+```{r}
+.DollarNames.Shape = function(env, pattern = "") {
+  ls(Shape, pattern = pattern)
+}
+```
+
+:::
+
+### `impl` ownership
+
+Adding the `#[extendr]` macro to an impl allows the struct or enum to be made available to R as an external pointer. Once you create an external pointer, that is then owned by R. So you can only get references to it or mutable references. If you need an owned version of the type, then you will need to clone it. 
+
+## Accessing exported `impl`s from Rust
+
+Invariably, if you have made an impl available to R via the `#[extendr]` macro, you may want to define functions that take the impl as a function argument. 
+
+Due to R owning the `impl`'s external pointer, these functions cannot take an owned version of the impl as an input. For example trying to define a function that subtracts an integer from the `n_coords()` output like below returns a compiler error.
+
+```rust
+#[extendr]
+fn subtract_coord(x: Shape, n: i32) -> i32 {
+    (x.n_coords() as i32) - n
+}
+```
+```
+the trait bound `Shape: extendr_api::FromRobj<'_>` is not satisfied
+  --> src/lib.rs:53:22
+   |
+   | fn subtract_coord(x: Shape, n: i32) -> i32 {
+   |                      ^^^^^ the trait `extendr_api::FromRobj<'_>` is not implemented for `Shape`
+   |
+help: consider borrowing here
+   |
+   | fn subtract_coord(x: &Shape, n: i32) -> i32 {
+   |                      +
+   | fn subtract_coord(x: &mut Shape, n: i32) -> i32 {
+   |                      ++++
+```
+
+As most often, the compiler's suggestion is a good one. Use `&Shape` to use a reference.
+
+## `ExternalPtr`: returning arbitrary Rust types 
+
+In the event that you need to return a Rust type to R that doesn't have a compatible impl or is a type that you don't own, you can use `ExternalPtr<T>`. The `ExternalPtr` struct allows any item to be captured as a pointer and returned to R. 
+
+Here, for example, an `ExternalPtr<Shape>` is returned from the `shape_ptr()` function.
+
+::: callout-tip
+Anything that is wrapped in `ExternalPtr<T>` must implement the `Debug` trait.
+:::
+
+```{extendrsrc}
+#[derive(Debug)]
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+#[extendr]
+fn shape_ptr(shape: &str) -> ExternalPtr<Shape> {
+    let variant = match shape {
+        "triangle" => Shape::Triangle,
+        "rectangle" => Shape::Rectangle,
+        "pentagon" => Shape::Pentagon,
+        "hexagon" => Shape::Hexagon,
+        &_ => unimplemented!(),
+    };
+
+    ExternalPtr::new(variant)
+}
+```
+
+Using an external pointer, however, is far more limiting than the `impl` block. For example, you cannot access and of its methods.
+
+```{r, error = TRUE}
+tri_ptr <- shape_ptr("triangle")
+tri_ptr$n_coords()
+```
+
+To use an `ExternalPtr<T>`, you have to go through a bit of extra work for it. 
+
+```{extendrsrc, include = FALSE}
+#[derive(Debug)]
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+#[extendr]
+impl Shape {
+    fn new(x: &str) -> Self {
+        match x {
+            "triangle" => Self::Triangle,
+            "rectangle" => Self::Rectangle,
+            "pentagon" => Self::Pentagon,
+            "hexagon" => Self::Hexagon,
+            &_ => unimplemented!(),
+        }
+    }
+
+    fn n_coords(&self) -> usize {
+        match &self {
+            Shape::Triangle => 3,
+            Shape::Rectangle => 4,
+            Shape::Pentagon => 4,
+            Shape::Hexagon => 5,
+        }
+    }
+}
+
+#[extendr]
+fn shape_ptr(shape: &str) -> ExternalPtr<Shape> {
+    let variant = match shape {
+        "triangle" => Shape::Triangle,
+        "rectangle" => Shape::Rectangle,
+        "pentagon" => Shape::Pentagon,
+        "hexagon" => Shape::Hexagon,
+        &_ => unimplemented!(),
+    };
+
+    ExternalPtr::new(variant)
+}
+
+#[extendr]
+fn n_coords_ptr(x: Robj) -> i32 {
+    let shape    = TryInto::<ExternalPtr<Shape>>::try_into(x); 
+    
+    match shape {
+        Ok(shp) => shp.n_coords() as i32,
+        Err(_) => 0
+    }
+}
+```
+
+```rust
+#[extendr]
+fn n_coords_ptr(x: Robj) -> i32 {
+    let shape = TryInto::<ExternalPtr<Shape>>::try_into(x); 
+    
+    match shape {
+        Ok(shp) => shp.n_coords() as i32,
+        Err(_) => 0
+    }
+}
+```
+
+This function definition takes an `Robj` and from it, tries to create an `ExternalPtr<Shape>`. Then, if the conversion did not error, it returns the number of coordinates as an i32 (R's version of an integer) and if there was an error converting, it returns 0.
+
+```{r}
+tri_ptr <- shape_ptr("triangle")
+
+n_coords_ptr(tri_ptr)
+
+n_coords_ptr(list())
+```
+
+For a good example of using `ExternalPtr<T>` within an R package, refer to the [`b64` R package](https://github.com/extendr/b64). 
