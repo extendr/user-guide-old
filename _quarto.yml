@@ -16,6 +16,7 @@ website:
       - getting-started.qmd
       - hello-world.qmd
       - project-structure.qmd
+      - extendr-macro.qmd
       - conversion.qmd
       - data-types.qmd
     style: "docked"
