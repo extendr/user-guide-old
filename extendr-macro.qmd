@@ -252,7 +252,7 @@ help: consider borrowing here
    |                      ++++
 ```
 
-As most often, the compiler's suggestion is a good one. Use `&Shape` to use a reference is ideal. 
+As most often, the compiler's suggestion is a good one. Use `&Shape` to use a reference.
 
 ## `ExternalPtr`: returning arbitrary Rust types 
 
