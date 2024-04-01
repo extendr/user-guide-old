@@ -2,7 +2,7 @@
 title: "Making Rust items available to R"
 ---
 
-The power of extendr is in its ability to use utilize Rust from R. The `#[extendr]` macro is what determines what is exported to R from Rust. This section covers the basic usage of the `#[extendr]` macro. 
+The power of extendr is in its ability to use Rust from R. The `#[extendr]` macro is what determines what is exported to R from Rust. This section covers the basic usage of the `#[extendr]` macro. 
 
 [`#[extendr]`](https://extendr.github.io/extendr/extendr_api/attr.extendr.html) is what is referred to as an [attribute macro](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros) (which itself is a type of [procedural macro](https://doc.rust-lang.org/reference/procedural-macros.html)). An attribute macro is attached to an [item](https://doc.rust-lang.org/reference/items.html) such as a function, `struct`, `enum`, or `impl`. 
 
