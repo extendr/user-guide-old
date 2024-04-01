@@ -16,7 +16,7 @@ library(rextendr)
 
 In order to make a function available to R, two things must happen. First, the `#[extendr]` macro must be attached to the function. For example, you can create a function `answer_to_life()`
 
-::: aside 
+::: {.callout-note collapse="true"}
 In the Hitchhiker's Guide to the Galaxy, the number 42 is the answer to the universe. See this fun [article from Scientific American](https://www.scientificamerican.com/article/for-math-fans-a-hitchhikers-guide-to-the-number-42/)
 :::
 
