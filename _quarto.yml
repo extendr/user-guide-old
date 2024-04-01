@@ -3,7 +3,7 @@ project:
   execute-dir: project
 
 execute:
-  freeze: auto
+  freeze: true
 
 website:
   title: "extendr"
