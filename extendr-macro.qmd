@@ -260,6 +260,10 @@ In the event that you need to return a Rust type to R that doesnt have a compati
 
 Here, for example, an `ExternalPtr<Shape>` is returned from the `shape_ptr()` function.
 
+::: callout-tip
+Anything that is wrapped in `ExternalPtr<T>` must implement the `Debug` trait.
+:::
+
 ```{extendrsrc}
 #[derive(Debug)]
 enum Shape {
@@ -358,7 +362,6 @@ fn n_coords_ptr(x: Robj) -> i32 {
     }
 }
 ```
-
 
 This function definition takes an `Robj` and from it, tries to create an `ExternalPtr<Shape>`. Then, if the conversion did not error, it returns the number of coordinates as an i32 (R's version of an integer) and if there was an error converting, it returns 0.
 
