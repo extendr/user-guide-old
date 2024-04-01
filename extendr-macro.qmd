@@ -185,7 +185,7 @@ extendr_module! {
 }
 ```
 
-Doing so creates an environment in your package called `Shape`. The environment contains the all of the methods that are available to you. 
+Doing so creates an environment in your package called `Shape`. The environment contains all of the methods that are available to you. 
 
 ::: callout-tip
 There are use cases where you may not want to expose any methods but do want to make it possible to return a struct or an enum to the R. You can do this by adding an empty impl block with the `#[extendr]` attribute macro. 
