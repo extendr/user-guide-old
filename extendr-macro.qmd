@@ -256,7 +256,7 @@ As most often, the compiler's suggestion is a good one. Use `&Shape` to use a re
 
 ## `ExternalPtr`: returning arbitrary Rust types 
 
-In the event that you need to return a Rust type to R that doesnt have a compatible impl or is a type that you don't own, you can use `ExternalPtr<T>`. The `ExternalPtr` struct allows any item to be captured as a pointer and returned to R. 
+In the event that you need to return a Rust type to R that doesn't have a compatible impl or is a type that you don't own, you can use `ExternalPtr<T>`. The `ExternalPtr` struct allows any item to be captured as a pointer and returned to R. 
 
 Here, for example, an `ExternalPtr<Shape>` is returned from the `shape_ptr()` function.
 
