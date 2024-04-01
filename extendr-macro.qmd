@@ -176,7 +176,7 @@ impl Shape {
 }
 ```
 
-In this example two new methods are added to the `Shape` enum. The first `new()` is like the `make_shape()` function that was shown earlier: it takes a `&str` and returns an enum variant. Now that the enum has an `impl` block with `#[extendr]` atrtibute macro, it can be exported to R by inclusion in the `extendr_module! {}` macro.
+In this example two new methods are added to the `Shape` enum. The first `new()` is like the `make_shape()` function that was shown earlier: it takes a `&str` and returns an enum variant. Now that the enum has an `impl` block with `#[extendr]` attribute macro, it can be exported to R by inclusion in the `extendr_module! {}` macro.
 
 ```rust
 extendr_module! {
