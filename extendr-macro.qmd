@@ -211,7 +211,7 @@ tri$n_coords()
 ```
 
 ::: callout-tip
-To make the methods visible to the `Shape` class you can define a `.DollarNames` method which will allow you to preview the methods and attributes when using the `$` syntax. This is very handy to define when making a an impl a core part of a package.
+To make the methods visible to the `Shape` class you can define a `.DollarNames` method which will allow you to preview the methods and attributes when using the `$` syntax. This is very handy to define when making an impl a core part of your package.
 
 ```{r}
 .DollarNames.Shape = function(env, pattern = "") {
