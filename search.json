@@ -81,7 +81,14 @@
     "href": "index.html",
     "title": "extendR: User guide",
     "section": "",
-    "text": "Introduction\nextendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See https://extendr.github.io/ for more information. This website is a user guide to all things extendr, Rust, R and the confluence of all three."
+    "text": "The extendr suite of software packages provides a set of utilities for bridging the R and Rust programming languages, making it easier for users to pass data between them using automatically generated bindings. In so doing, it overcomes a fundamental challenge of all such language bindings, namely, the fact that the two languages make different design choices regarding the representation of data types. Most of the time, data types in Rust and R map quite nicely. In other cases, it takes careful consideration. And, in a few unfortunate cases, it is not even possible. Generally speaking, though, if an R version of a Rust type exists, extendr will do that mapping for you, but you will on occasion have to do some of that work yourself.\nTo help guide you toward best practices here, we have put together this website as a user guide, with lots of examples showcasing all things extendr, Rust, and R, as well as the confluence of all three.\nSee https://extendr.github.io/ for more information.\n\n\nIf you have any questions or are looking for advice, feel free to join the community’s Discord server. You can usually find the maintainers there, as well as other helpful extendr users."
+  },
+  {
+    "objectID": "index.html#community-support",
+    "href": "index.html#community-support",
+    "title": "extendR: User guide",
+    "section": "",
+    "text": "If you have any questions or are looking for advice, feel free to join the community’s Discord server. You can usually find the maintainers there, as well as other helpful extendr users."
   },
   {
     "objectID": "extendr-macro.html",

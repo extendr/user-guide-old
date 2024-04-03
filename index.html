@@ -177,7 +177,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#community-support" id="toc-community-support" class="nav-link" data-scroll-target="#community-support">Community Support</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/extendr/user-guide/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/extendr/user-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -205,9 +208,15 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>extendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See <a href="https://extendr.github.io/" class="uri">https://extendr.github.io/</a> for more information. This website is a <em>user</em> guide to all things extendr, Rust, R and the confluence of all three.</p>
+<p>The extendr suite of software packages provides a set of utilities for bridging the R and Rust programming languages, making it easier for users to pass data between them using automatically generated bindings. In so doing, it overcomes a fundamental challenge of all such language bindings, namely, the fact that the two languages make different design choices regarding the representation of data types. Most of the time, data types in Rust and R map quite nicely. In other cases, it takes careful consideration. And, in a few unfortunate cases, it is not even possible. Generally speaking, though, if an R version of a Rust type exists, extendr will do that mapping for you, but you will on occasion have to do some of that work yourself.</p>
+<p>To help guide you toward best practices here, we have put together this website as a <em>user</em> guide, with lots of examples showcasing all things extendr, Rust, and R, as well as the confluence of all three.</p>
+<p>See <a href="https://extendr.github.io/" class="uri">https://extendr.github.io/</a> for more information.</p>
+<section id="community-support" class="level2">
+<h2 class="anchored" data-anchor-id="community-support">Community Support</h2>
+<p>If you have any questions or are looking for advice, feel free to join the community’s <a href="https://discord.gg/KM3Bhwt3uk">Discord server</a>. You can usually find the maintainers there, as well as other helpful extendr users.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
