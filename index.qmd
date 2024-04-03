@@ -20,3 +20,9 @@ as a *user* guide, with lots of examples showcasing all things extendr, Rust,
 and R, as well as the confluence of all three.
 
 See <https://extendr.github.io/> for more information.
+
+## Community Support
+
+If you have any questions or are looking for advice, feel free to join the
+community's [Discord server](https://discord.gg/KM3Bhwt3uk). You can usually
+find the maintainers there, as well as other helpful extendr users.

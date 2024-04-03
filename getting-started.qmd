@@ -4,10 +4,6 @@ title: Getting started
 
 To start building R packages using extendr you will need to have R and Rust toolchain installed on your machine. 
 
-::: callout-tip
-Join the [Discord server](https://discord.gg/KM3Bhwt3uk) server to chat with other extendr users and the maintainers. 
-:::
-
 ## R 
 
 Ensure that you have a relatively new version of R installed. It is recommended to use a moderately new version (>= 4.2.0). 
