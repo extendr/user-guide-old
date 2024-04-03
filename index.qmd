@@ -4,4 +4,19 @@ title: "extendR: User guide"
 
 # Introduction
 
-extendR is a suite of software packages concerned with bridging R and Rust, through automatically generated bindings. See <https://extendr.github.io/> for more information. This website is a _user_ guide to all things extendr, Rust, R and the confluence of all three.
+The extendr suite of software packages provides a set of utilities for bridging
+the R and Rust programming languages, making it easier for users to pass data
+between them using automatically generated bindings. In so doing, it overcomes a
+fundamental challenge of all such language bindings, namely, the fact that the
+two languages make different design choices regarding the representation of data
+types. Most of the time, data types in Rust and R map quite nicely. In other
+cases, it takes careful consideration. And, in a few unfortunate cases, it is
+not even possible. Generally speaking, though, if an R version of a Rust type
+exists, extendr will do that mapping for you, but you will on occasion have to
+do some of that work yourself.
+
+To help guide you toward best practices here, we have put together this website
+as a *user* guide, with lots of examples showcasing all things extendr, Rust,
+and R, as well as the confluence of all three.
+
+See <https://extendr.github.io/> for more information.
