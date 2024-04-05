@@ -1,0 +1,243 @@
+---
+title: "Simple conversions between R and Rust"
+---
+
+```{r}
+#| echo: false
+
+library(rextendr)
+
+```
+
+This tutorial demonstrates some of the basics of passing data types back and
+forth between Rust and R. This includes all of the following:
+
+-   Passing scalar types between R and Rust.
+-   Passing vector types between R and Rust.
+-   Printing from Rust to the console in R.
+-   Handling missing values in Rust (a primer).
+
+We'll start with examples showing how to pass R types as explicit Rust types.
+This is useful for demonstration purposes, but it does ignore one very very big
+issue, and that's missing values. Rust data types do not allow for missing
+values, so they have to be handled carefully. Fortunately, extendr offers its
+own data types built on top of the Rust types to do that for you. For this
+reason, **it is strongly recommended that you work with the extendr types
+wherever possible.**
+
+## Scalar Type Mapping with Rust Types
+
+Recall that scalars are single values of a type. To see how these scalars get 
+passed back and forth between Rust and R, we'll use doubles as an example.
+
+| R type         | extendr type | Rust type      |
+|----------------|--------------|----------------|
+| `integer(1)`   | `Rint`       | `i32`          |
+| `double(1)`    | `Rfloat`     | `f64`          |
+| `logical(1)`   | `Rbool`      | `bool`         |
+| `complex(1)`   | `Rcplx`      | `Complex<f64>` |
+| `character(1)` | `Rstr`       | `String`       |
+
+We first write our Rust function.
+
+```{extendrsrc}
+
+fn scalar_double(x: f64) { rprintln!("The value of x is {}", x); }
+
+```
+
+And now call that Rust function in R:
+
+```{r}
+
+scalar_double(4.2)
+
+```
+
+A couple of things to note with this example. First, `x: f64` tells Rust that
+the type of `x` being passed to the function is a single double or "float"
+value. Second, `rprintln!("{}", x);` is an extendr macro (the give-away for this
+is the `!`) that makes it easier to print information from Rust to the console
+in R. R users will perhaps notice that the syntax is vaguely `{glue}`-like in
+that the value of x is inserted into the curly brackets.
+
+Now, what if, rather than printing the value of `x` to the R console, we wanted
+instead to return that value to R? To do that, we just need to let Rust know
+what type is being returned by our function. This is done with the `-> type`
+notation. The extendr crate knows how to handle the scalar `f64` type and pass
+it to R as double.
+
+```{extendrsrc}
+
+fn scalar_double(x: f64) -> f64 { x }
+
+```
+
+```{r}
+
+x <- scalar_double(4.2)
+
+typeof(x)
+
+x + 1
+
+```
+
+### Additional examples
+
+```{extendrsrc}
+
+fn scalar_integer(x: i32) -> i32 { x }
+
+fn scalar_logical(x: bool) -> bool { x }
+
+fn scalar_character(x: String) -> String { x }
+
+```
+
+```{r}
+
+scalar_integer(4L)
+
+scalar_logical(TRUE)
+
+scalar_character("Hello world!")
+
+```
+
+## Vector Type Mapping with Rust Types
+
+What happens if we try to pass more than one value to `scalar_double()`?
+
+```{r}
+#| error: true
+
+scalar_double(c(4.2, 1.3, 2.5))
+
+```
+
+It errors because the function expects a scalar of the `f64` type, not a vector
+of `f64`. In this section, we show you how to pass vectors between R and Rust.
+The syntax is basically the same as with scalars, with just some minor changes.
+We'll use doubles again to demonstrate this.
+
+For reference, here's our table of vector type mappings.
+
+| R type        | extendr type | Rust type           |
+|---------------|--------------|---------------------|
+| `integer()`   | `Integers`   | `Vec<i32>`          |
+| `double()`    | `Doubles`    | `Vec<f64>`          |
+| `logical()`   | `Logicals`   | `Vec<bool>`         |
+| `complex()`   | `Complexes`  | `Vec<Complex<f64>>` |
+| `character()` | `Strings`    | `Vec<String>`       |
+| `raw()`       | `Raw`        | `&[u8]`             |
+| `list()`      | `List`       |                     |
+
+And here's our Rust function:
+
+```{extendrsrc}
+
+fn vector_double(x: Vec<f64>) {
+  
+    rprintln!("The values of x are {:?}", x);
+  
+}
+
+```
+
+And now call that Rust function in R:
+
+```{r}
+
+vector_double(c(4.2, 1.3, 2.5))
+
+```
+
+Here we tell Rust that a vector of `f64` values is being passed to the function
+using `x: Vec<f64>`. Note as well the use of `:?` in the print macro. This
+allows the macro to handle the vector. It would error otherwise, expecting a
+scalar value.
+
+Returning the vector of doubles to R should now be obvious.
+
+```{extendrsrc}
+
+fn vector_double(x: Vec<f64>) -> Vec<f64> { x }
+
+```
+
+```{r}
+
+x <- vector_double(c(4.2, 1.3, 2.5))
+
+typeof(x)
+
+x + 1
+
+```
+
+### Additional examples
+
+```{extendrsrc}
+
+fn vector_integer(x: Vec<i32>) -> Vec<i32> { x }
+
+fn vector_logical(x: Vec<bool>) -> Vec<bool> { x }
+
+fn vector_character(x: Vec<String>) -> Vec<String> { x }
+
+```
+
+```{r}
+
+vector_integer(c(4L, 6L, 8L))
+
+vector_logical(c(TRUE, FALSE, TRUE))
+
+vector_character(c("Hello world!", "Hello extendr!", "Hello R!"))
+
+```
+
+## Missing values
+
+What about missing values?
+
+```{extendrsrc}
+
+fn plus_one(x: f64) -> f64 { x + 1.0 }
+
+```
+
+```{r}
+#| error: true
+
+plus_one(4.2)
+
+```
+
+The solution to this involves some complexities of Rust and extendr that later
+tutorials will help to clarify. Here we introduce you to some of the central
+ideas.
+
+```{extendrsrc}
+
+#[extendr(use_try_from = true)]
+fn plus_one(x: Rfloat) -> Rfloat { x + 1.0 }
+
+```
+
+```{r}
+
+plus_one(NA_real_)
+
+plus_one(4.2)
+
+```
+
+Two things to note here. First, you will see that we have replaced the Rust type
+`f64` with the extendr type `Rfloat`. The extendr type is NA aware, so it knows
+what to do with missing values. Second, we use the macro
+`#[extendr(use_try_from = true)]`. Without getting into the details, this
+basically tells Rust what to do with `Rfloat`. The combination of these two
+changes allows us to pass missing values to our `plus_one()` function and return
+missing values without raising an error.
