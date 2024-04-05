@@ -2,8 +2,6 @@
 title: "extendR: User guide"
 ---
 
-# Introduction
-
 The extendr suite of software packages provides a set of utilities for bridging
 the R and Rust programming languages, making it easier for users to pass data
 between them using automatically generated bindings. In so doing, it overcomes a
