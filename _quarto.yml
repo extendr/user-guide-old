@@ -16,9 +16,10 @@ website:
       - getting-started.qmd
       - hello-world.qmd
       - project-structure.qmd
+      - using-rust-types.qmd
+      - data-types.qmd
       - extendr-macro.qmd
       - conversion.qmd
-      - data-types.qmd
     style: "docked"
     search: true
   navbar:
