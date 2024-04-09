@@ -20,6 +20,7 @@ website:
       - data-types.qmd
       - extendr-macro.qmd
       - conversion.qmd
+      - heckin-case-converter.qmd
     style: "docked"
     search: true
   navbar:
