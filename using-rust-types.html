@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>extendr - extendr project structure</title>
+<title>extendr - Using Rust types in R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -145,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./project-structure.html">extendr project structure</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./using-rust-types.html">Using Rust types in R</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -179,13 +179,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./project-structure.html" class="sidebar-item-text sidebar-link active">
+  <a href="./project-structure.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">extendr project structure</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./using-rust-types.html" class="sidebar-item-text sidebar-link">
+  <a href="./using-rust-types.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Using Rust types in R</span></a>
   </div>
 </li>
@@ -223,17 +223,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#controlling-exports-to-r-lib.rs" id="toc-controlling-exports-to-r-lib.rs" class="nav-link active" data-scroll-target="#controlling-exports-to-r-lib.rs">Controlling exports to R: <code>lib.rs</code></a></li>
-  <li><a href="#building-the-package-makevars" id="toc-building-the-package-makevars" class="nav-link" data-scroll-target="#building-the-package-makevars">Building the package: <code>Makevars</code></a></li>
+  <li><a href="#scalar-type-mapping-with-rust-types" id="toc-scalar-type-mapping-with-rust-types" class="nav-link active" data-scroll-target="#scalar-type-mapping-with-rust-types">Scalar Type Mapping with Rust Types</a>
+  <ul class="collapse">
+  <li><a href="#additional-examples" id="toc-additional-examples" class="nav-link" data-scroll-target="#additional-examples">Additional examples</a></li>
+  </ul></li>
+  <li><a href="#vector-type-mapping-with-rust-types" id="toc-vector-type-mapping-with-rust-types" class="nav-link" data-scroll-target="#vector-type-mapping-with-rust-types">Vector Type Mapping with Rust Types</a>
+  <ul class="collapse">
+  <li><a href="#additional-examples-1" id="toc-additional-examples-1" class="nav-link" data-scroll-target="#additional-examples-1">Additional examples</a></li>
+  </ul></li>
+  <li><a href="#missing-values" id="toc-missing-values" class="nav-link" data-scroll-target="#missing-values">Missing values</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/extendr/user-guide/edit/main/project-structure.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/extendr/user-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/extendr/user-guide/edit/main/using-rust-types.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/extendr/user-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">extendr project structure</h1>
+<h1 class="title">Using Rust types in R</h1>
 </div>
 
 
@@ -250,38 +257,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>A extendr-powered R package has a fairly unique structure. This section briefly outlines the structure of an extendr package and the important files.</p>
-<p>extendr works by creating a Rust library crate in <code>src/rust</code> that is defined by <code>src/rust/Cargo.toml</code>.</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>Cargo.toml</strong></pre>
+<p>This tutorial demonstrates some of the basics of passing data types back and forth between Rust and R. This includes all of the following:</p>
+<ul>
+<li>Passing scalar types between R and Rust.</li>
+<li>Passing vector types between R and Rust.</li>
+<li>Printing from Rust to the console in R.</li>
+<li>Handling missing values in Rust (a primer).</li>
+</ul>
+<p>We’ll start with examples showing how to pass R types as explicit Rust types. This is useful for demonstration purposes, but it does ignore one very very big issue, and that’s missing values. Rust data types do not allow for missing values, so they have to be handled carefully. Fortunately, extendr offers its own data types built on top of the Rust types to do that for you. For this reason, <strong>it is strongly recommended that you work with the extendr types wherever possible.</strong> However, when first getting comfortable with extendr, and possible even Rust, it may feel more comfortable to work with Rust native types.</p>
+<section id="scalar-type-mapping-with-rust-types" class="level2">
+<h2 class="anchored" data-anchor-id="scalar-type-mapping-with-rust-types">Scalar Type Mapping with Rust Types</h2>
+<p>In R, there is no such thing as a scalar value. Everything is a vector. When using a scalar value in R, that is really a length one vector. In Rust, however, scalar values are the building blocks of everything.</p>
+<p>Below is a mapping of scalar values between R, extendr, and Rust.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>R type</th>
+<th>extendr type</th>
+<th>Rust type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>integer(1)</code></td>
+<td><code>Rint</code></td>
+<td><code>i32</code></td>
+</tr>
+<tr class="even">
+<td><code>double(1)</code></td>
+<td><code>Rfloat</code></td>
+<td><code>f64</code></td>
+</tr>
+<tr class="odd">
+<td><code>logical(1)</code></td>
+<td><code>Rbool</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr class="even">
+<td><code>complex(1)</code></td>
+<td><code>Rcplx</code></td>
+<td><code>Complex&lt;f64&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><code>character(1)</code></td>
+<td><code>Rstr</code></td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p>To see how these scalars get passed back and forth between Rust and R, we’ll first explore Rust’s <code>f64</code> value which is a 64-bit float. This is equivalent to R’s <code>double(1)</code>. We’ll write a very simple Rust function that prints the value of the input and does not return anything.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> scalar_double(x<span class="op">:</span> <span class="dt">f64</span>) <span class="op">{</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="pp">rprintln!</span>(<span class="st">"The value of x is {x}"</span>)<span class="op">;</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode" id="cb1" data-filename="Cargo.toml"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[package]</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">name</span> <span class="op">=</span> <span class="st">'</span><span class="vs">hellorust</span><span class="st">'</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">publish</span> <span class="op">=</span> <span class="cn">false</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">version</span> <span class="op">=</span> <span class="st">'</span><span class="vs">0.1.0</span><span class="st">'</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">edition</span> <span class="op">=</span> <span class="st">'</span><span class="vs">2021</span><span class="st">'</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">[lib]</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="dt">crate-type</span> <span class="op">=</span> <span class="op">[</span> <span class="st">'</span><span class="vs">staticlib</span><span class="st">'</span> <span class="op">]</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="dt">name</span> <span class="op">=</span> <span class="st">'</span><span class="vs">hellorust</span><span class="st">'</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">[dependencies]</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="dt">extendr-api</span> <span class="op">=</span> <span class="st">'</span><span class="vs">*</span><span class="st">'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Note the <code>crate-type = [ 'staticlib' ]</code>. When this library is compiled, it creates a static library which can then be called from R.</p>
-<section id="controlling-exports-to-r-lib.rs" class="level2">
-<h2 class="anchored" data-anchor-id="controlling-exports-to-r-lib.rs">Controlling exports to R: <code>lib.rs</code></h2>
-<p>The <code>lib.rs</code> file determines what will be exposed to your R package. The <code>extendr_module!</code> macro in <code>lib.rs</code> controls what will have wrappers provided to your R package.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">extendr_module</span><span class="er">!</span> <span class="er">{</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mod</span> <span class="dt">hellorust</span><span class="er">;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fn</span> <span class="dt">hello_world</span><span class="er">;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The <code>mod hellorust</code> is the name of the R package. Additional functions, <code>impl</code>s, and modules can also be added to this macro.</p>
-</section>
-<section id="building-the-package-makevars" class="level2">
-<h2 class="anchored" data-anchor-id="building-the-package-makevars">Building the package: <code>Makevars</code></h2>
-<p>When creating an R package that uses compiled code, a file called <code>Makevars</code> is used.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -292,10 +322,165 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>See <a href="https://cran.r-project.org/doc/manuals/R-exts.html#Using-Makevars">Using Makevars</a> in Writing R Extensions for a thorough discussion.</p>
+<p>Note the use of <code>rprintln!()</code> instead of the <code>println!()</code> macro. Using <code>println!()</code> will not always be captured by the R console. Using <code>rprintln!()</code> will ensure that it is.</p>
 </div>
 </div>
-<p><code>Makevars</code> is used as a preprocessing step for compiling an R package. The files <code>Makevars</code> and <code>Makevars.win</code> compile the Rust library in <code>src/rust</code>, and link to the library.</p>
+<p>If you are not working inside of an extendr R package, you can create this function locally using <code>rextendr::rust_function()</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rextendr<span class="sc">::</span><span class="fu">rust_function</span>(<span class="st">"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">fn scalar_double(x: f64) { </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">    rprintln!("</span>The value of x is {x}<span class="st">"); </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Try calling this function on a single double value.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scalar_double</span>(<span class="fl">4.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The value of x is 4.2</code></pre>
+</div>
+</div>
+<p>A couple of things to note with this example. First, <code>x: f64</code> tells Rust that the type of <code>x</code> being passed to the function is a single double vector or “float” value. Second, <code>rprintln!("{}", x);</code> is an extendr macro (the give-away for this is the <code>!</code>) that makes it easier to print information from Rust to the console in R. R users will perhaps notice that the syntax is vaguely <code>{glue}</code>-like in that the value of x is inserted into the curly brackets.</p>
+<p>Now, what if, rather than printing the value of <code>x</code> to the R console, we wanted instead to return that value to R? To do that, we just need to let Rust know what type is being returned by our function. This is done with the <code>-&gt; type</code> notation. The extendr crate knows how to handle the scalar <code>f64</code> type and pass it to R as double.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> scalar_double(x<span class="op">:</span> <span class="dt">f64</span>) <span class="op">-&gt;</span> <span class="dt">f64</span> <span class="op">{</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    x </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">scalar_double</span>(<span class="fl">4.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The value of x is 4.2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NULL"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>numeric(0)</code></pre>
+</div>
+</div>
+<section id="additional-examples" class="level3">
+<h3 class="anchored" data-anchor-id="additional-examples">Additional examples</h3>
+<p>We can extend this example to <code>i32</code>, <code>bool</code> and <code>String</code> values in Rust.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> scalar_integer(x<span class="op">:</span> <span class="dt">i32</span>) <span class="op">-&gt;</span> <span class="dt">i32</span> <span class="op">{</span> x <span class="op">}</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> scalar_logical(x<span class="op">:</span> <span class="dt">bool</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span> x <span class="op">}</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> scalar_character(x<span class="op">:</span> <span class="dt">String</span>) <span class="op">-&gt;</span> <span class="dt">String</span> <span class="op">{</span> x <span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scalar_integer</span>(<span class="dv">4</span>L)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scalar_logical</span>(<span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scalar_character</span>(<span class="st">"Hello world!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello world!"</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="vector-type-mapping-with-rust-types" class="level2">
+<h2 class="anchored" data-anchor-id="vector-type-mapping-with-rust-types">Vector Type Mapping with Rust Types</h2>
+<p>What happens if we try to pass more than one value to <code>scalar_double()</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scalar_double</span>(<span class="fu">c</span>(<span class="fl">4.2</span>, <span class="fl">1.3</span>, <span class="fl">2.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in scalar_double(c(4.2, 1.3, 2.5)): Input must be of length 1. Vector of length &gt;1 given.</code></pre>
+</div>
+</div>
+<p>It errors because the function expects a scalar of the <code>f64</code> type, not a vector of <code>f64</code>.</p>
+<p>In this section, we show you how to pass Rust vectors between R and Rust.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>While using a Rust vector is possible in some cases, it is strongly not recommended. Instead, extendr types should be used as they provide access directly to R objectes. Whereas using Rust vectors requires additional allocations.</p>
+</div>
+</div>
+<p>The syntax is basically the same as with scalars, with just some minor changes. We’ll use doubles again to demonstrate this.</p>
+<p>For reference, below are the type of Rust vectors that can be utilized with extendr.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>R type</th>
+<th>extendr type</th>
+<th>Rust type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>integer()</code></td>
+<td><code>Integers</code></td>
+<td><code>Vec&lt;i32&gt;</code></td>
+</tr>
+<tr class="even">
+<td><code>double()</code></td>
+<td><code>Doubles</code></td>
+<td><code>Vec&lt;f64&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><code>complex()</code></td>
+<td><code>Complexes</code></td>
+<td><code>Vec&lt;Complex&lt;f64&gt;&gt;</code></td>
+</tr>
+<tr class="even">
+<td><code>character()</code></td>
+<td><code>Strings</code></td>
+<td><code>Vec&lt;String&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><code>raw()</code></td>
+<td><code>Raw</code></td>
+<td><code>&amp;[u8]</code></td>
+</tr>
+<tr class="even">
+<td><code>logical()</code></td>
+<td><code>Logicals</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>list()</code></td>
+<td><code>List</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You might have anticipated <code>Vec&lt;bool&gt;</code> to be a supported Rust vector type. This is not possible because in R, logical vectors do not contain <em>only</em> <code>true</code> and <code>false</code> like Rust’s bool type. They also can be an <code>NA</code> value which has no corresponding representation in Rust.</p>
+</div>
+</div>
+<p>Below defines Rust function which takes in a vector of <code>f64</code> values and prints them out.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> vector_double(x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span>) <span class="op">{</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="pp">rprintln!</span>(<span class="st">"The values of x are {x:?}"</span>)<span class="op">;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>That function can be called from R which prints the Debug format of the vector.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -306,9 +491,94 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>Makevars</code> is used for *nix operating systems and <code>Makevars.win</code> is used for Windows.</p>
+<p>Rust’s vector do not implement the <a href="https://doc.rust-lang.org/std/fmt/trait.Display.html">Display</a> trait so the debug format (<code>:?</code>) is used.</p>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vector_double</span>(<span class="fu">c</span>(<span class="fl">4.2</span>, <span class="fl">1.3</span>, <span class="fl">2.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The values of x are [4.2, 1.3, 2.5]</code></pre>
+</div>
+</div>
+<p>Returning values using Rust follows the same rules as R. You do not need to explicitly return a value as long as the last item in an expression is not followed by a <code>;</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> vector_double(x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span> <span class="op">{</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    x </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Calling the function returns the input as a double vector</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">vector_double</span>(<span class="fu">c</span>(<span class="fl">4.2</span>, <span class="fl">1.3</span>, <span class="fl">2.5</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "double"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.2 2.3 3.5</code></pre>
+</div>
+</div>
+<section id="additional-examples-1" class="level3">
+<h3 class="anchored" data-anchor-id="additional-examples-1">Additional examples</h3>
+<p>These same principles can be extended to other supported vector types such as <code>Vec&lt;i32&gt;</code> and <code>Vec&lt;String&gt;</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> vector_integer(x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">&gt;</span> <span class="op">{</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    x</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> vector_character(x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    x </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vector_integer</span>(<span class="fu">c</span>(<span class="dv">4</span>L, <span class="dv">6</span>L, <span class="dv">8</span>L))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4 6 8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vector_character</span>(<span class="fu">c</span>(<span class="st">"Hello world!"</span>, <span class="st">"Hello extendr!"</span>, <span class="st">"Hello R!"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello world!"   "Hello extendr!" "Hello R!"      </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="missing-values" class="level2">
+<h2 class="anchored" data-anchor-id="missing-values">Missing values</h2>
+<p>In Rust, missing values do not exist this in part why using Rust types alone is insufficient. Below a simple function which adds 1 to the input is defined.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">]</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> plus_one(x<span class="op">:</span> <span class="dt">f64</span>) <span class="op">-&gt;</span> <span class="dt">f64</span> <span class="op">{</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">+</span> <span class="dv">1.0</span> </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Running this using a missing value results in an error.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plus_one</span>(<span class="cn">NA_real_</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in plus_one(NA_real_): Input must not be NA.</code></pre>
+</div>
+</div>
+<p>These extendr types, however, can be utilized much like a normal <code>f64</code> that is <code>NA</code> aware. You will see that we have replaced the Rust type <code>f64</code> with the extendr type <code>Rfloat</code>. Since <code>Rfloat</code> maps to a scalar value and not vector, the conversion needs to be handled more delicately. The macro was invoked with the <code>use_try_from = true</code> argument. This will eventually become the default behavior of extendr.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>extendr<span class="at">(</span>use_try_from <span class="op">=</span> <span class="cn">true</span><span class="at">)]</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> plus_one(x<span class="op">:</span> Rfloat) <span class="op">-&gt;</span> Rfloat <span class="op">{</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">+</span> <span class="dv">1.0</span> </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plus_one</span>(<span class="cn">NA_real_</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plus_one</span>(<span class="fl">4.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.2</code></pre>
+</div>
+</div>
+<p>The combination of these two changes allows us to pass missing values to our <code>plus_one()</code> function and return missing values without raising an error.</p>
 
 
 </section>
@@ -872,4 +1142,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/extendr/user-guide/edit/main/project-structure.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/extendr/user-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/extendr/user-guide/edit/main/using-rust-types.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/extendr/user-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

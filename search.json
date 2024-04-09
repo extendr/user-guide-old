@@ -1,173 +1,5 @@
 [
   {
-    "objectID": "getting-started.html",
-    "href": "getting-started.html",
-    "title": "Getting started",
-    "section": "",
-    "text": "To start building R packages using extendr you will need to have R and Rust toolchain installed on your machine.",
-    "crumbs": [
-      "extendR: User guide",
-      "Getting started"
-    ]
-  },
-  {
-    "objectID": "getting-started.html#r",
-    "href": "getting-started.html#r",
-    "title": "Getting started",
-    "section": "R",
-    "text": "R\nEnsure that you have a relatively new version of R installed. It is recommended to use a moderately new version (&gt;= 4.2.0).\n\n\n\n\n\n\nNote\n\n\n\nInstall the newest version of R from CRAN\n\n\nThe R package {rextendr} is used to simplify the scaffolding of extendr projects as well as document Rust functions and objects. Install the development version of {rextendr} to have the most up to date changes.\n# install pak if not available\nif (!requireNamespace(\"pak\")) install.packages(\"pak\")\n\n# install development version of rextendr\npak::pak(\"extendr/rextendr\")",
-    "crumbs": [
-      "extendR: User guide",
-      "Getting started"
-    ]
-  },
-  {
-    "objectID": "getting-started.html#rust",
-    "href": "getting-started.html#rust",
-    "title": "Getting started",
-    "section": "Rust",
-    "text": "Rust\nNext, ensure that you have Rust installed. extendr has a minimum supported Rust version (msrv) of 1.64. Follow the rustup installation instructions to install Rust.\n\n\n\n\n\n\nTip\n\n\n\nIf you are using Windows, you will also need to install the stable-x86_64-pc-windows-msvc toolchain. From your terminal run the following\nrustup toolchain install stable-x86_64-pc-windows-msvc\nrustup default stable-x86_64-pc-windows-msvc\n\n\nOnce you have installed the Rust toolchain, ensure it is compatible with extendr.\nFrom R run:\n\nrextendr::rust_sitrep()\n\nRust infrastructure sitrep:\n✔ \"rustup\": 1.26.0 (5af9b9484 2023-04-05)\n✔ \"cargo\": 1.79.0-nightly (499a61ce7 2024-03-26)\nℹ host: aarch64-apple-darwin\nℹ toolchains: stable-aarch64-apple-darwin, nightly-aarch64-apple-darwin\n  (default), and 1.64.0-aarch64-apple-darwin\nℹ targets: aarch64-apple-darwin and wasm32-unknown-unknown\n\n\nIf there are no issues reported by the situation report (sitrep), you are ready to start building Rust-powered R packages!",
-    "crumbs": [
-      "extendR: User guide",
-      "Getting started"
-    ]
-  },
-  {
-    "objectID": "getting-started.html#post-script-tools-for-writing-rust",
-    "href": "getting-started.html#post-script-tools-for-writing-rust",
-    "title": "Getting started",
-    "section": "Post Script: Tools for Writing Rust",
-    "text": "Post Script: Tools for Writing Rust\nIf you are new to writing Rust, this following section contains some tips.\nFirst, it is recommended to install a configurable code editor like Visual Studio Code (VS Code).\nOnce you have VS Code, or another text editor, installed you will need the rust-analyzer. The rust-analyzer will provide type hinting and auto-completion suggestions. It is very helpful!",
-    "crumbs": [
-      "extendR: User guide",
-      "Getting started"
-    ]
-  },
-  {
-    "objectID": "project-structure.html",
-    "href": "project-structure.html",
-    "title": "extendr project structure",
-    "section": "",
-    "text": "A extendr-powered R package has a fairly unique structure. This section briefly outlines the structure of an extendr package and the important files.\nextendr works by creating a Rust library crate in src/rust that is defined by src/rust/Cargo.toml.\nNote the crate-type = [ 'staticlib' ]. When this library is compiled, it creates a static library which can then be called from R.",
-    "crumbs": [
-      "extendR: User guide",
-      "extendr project structure"
-    ]
-  },
-  {
-    "objectID": "project-structure.html#controlling-exports-to-r-lib.rs",
-    "href": "project-structure.html#controlling-exports-to-r-lib.rs",
-    "title": "extendr project structure",
-    "section": "Controlling exports to R: lib.rs",
-    "text": "Controlling exports to R: lib.rs\nThe lib.rs file determines what will be exposed to your R package. The extendr_module! macro in lib.rs controls what will have wrappers provided to your R package.\nextendr_module! {\n    mod hellorust;\n    fn hello_world;\n}\nThe mod hellorust is the name of the R package. Additional functions, impls, and modules can also be added to this macro.",
-    "crumbs": [
-      "extendR: User guide",
-      "extendr project structure"
-    ]
-  },
-  {
-    "objectID": "project-structure.html#building-the-package-makevars",
-    "href": "project-structure.html#building-the-package-makevars",
-    "title": "extendr project structure",
-    "section": "Building the package: Makevars",
-    "text": "Building the package: Makevars\nWhen creating an R package that uses compiled code, a file called Makevars is used.\n\n\n\n\n\n\nNote\n\n\n\nSee Using Makevars in Writing R Extensions for a thorough discussion.\n\n\nMakevars is used as a preprocessing step for compiling an R package. The files Makevars and Makevars.win compile the Rust library in src/rust, and link to the library.\n\n\n\n\n\n\nTip\n\n\n\nMakevars is used for *nix operating systems and Makevars.win is used for Windows.",
-    "crumbs": [
-      "extendR: User guide",
-      "extendr project structure"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "extendR: User guide",
-    "section": "",
-    "text": "The extendr suite of software packages provides a set of utilities for bridging the R and Rust programming languages, making it easier for users to pass data between them using automatically generated bindings. In so doing, it overcomes a fundamental challenge of all such language bindings, namely, the fact that the two languages make different design choices regarding the representation of data types. Most of the time, data types in Rust and R map quite nicely. In other cases, it takes careful consideration. And, in a few unfortunate cases, it is not even possible. Generally speaking, though, if an R version of a Rust type exists, extendr will do that mapping for you, but you will on occasion have to do some of that work yourself.\nTo help guide you toward best practices here, we have put together this website as a user guide, with lots of examples showcasing all things extendr, Rust, and R, as well as the confluence of all three.\nSee https://extendr.github.io/ for more information.\n\n\nIf you have any questions or are looking for advice, feel free to join the community’s Discord server. You can usually find the maintainers there, as well as other helpful extendr users."
-  },
-  {
-    "objectID": "index.html#community-support",
-    "href": "index.html#community-support",
-    "title": "extendR: User guide",
-    "section": "",
-    "text": "If you have any questions or are looking for advice, feel free to join the community’s Discord server. You can usually find the maintainers there, as well as other helpful extendr users."
-  },
-  {
-    "objectID": "extendr-macro.html",
-    "href": "extendr-macro.html",
-    "title": "Making Rust items available to R",
-    "section": "",
-    "text": "The power of extendr is in its ability to use Rust from R. The #[extendr] macro is what determines what is exported to R from Rust. This section covers the basic usage of the #[extendr] macro.\n#[extendr] is what is referred to as an attribute macro (which itself is a type of procedural macro). An attribute macro is attached to an item such as a function, struct, enum, or impl.\nThe #[extendr] attribute macro indicates that an item should be made available to R. However, it can only be used with a function or an impl block.",
-    "crumbs": [
-      "extendR: User guide",
-      "Making Rust items available to R"
-    ]
-  },
-  {
-    "objectID": "extendr-macro.html#exporting-functions",
-    "href": "extendr-macro.html#exporting-functions",
-    "title": "Making Rust items available to R",
-    "section": "Exporting functions",
-    "text": "Exporting functions\nIn order to make a function available to R, two things must happen. First, the #[extendr] macro must be attached to the function. For example, you can create a function answer_to_life()\n\n\n\n\n\n\nNote\n\n\n\n\n\nIn the Hitchhiker’s Guide to the Galaxy, the number 42 is the answer to the universe. See this fun article from Scientific American\n\n\n\n#[extendr]\nfn answer_to_life() -&gt; i32 {\n    42\n}\nBy adding the #[extendr] attribute macro to the answer_to_life() function, we are indicating that this function has to be compatible with R. This alone, however, does not make the function available to R. It must be made available via the extendr_module! {} macro in lib.rs.\nextendr_module! {\n    mod hellorust;\n    fn answer_to_life;\n}\n\n\n\n\n\n\nTip\n\n\n\nEverything that is made available in the extendr_module! {} macro in lib.rs must be compatible with R as indicated by the #[extendr] macro. Note that the module name mod hellorust must be the name of the R package that this is part of. If you have created your package with rextendr::use_extendr() this should be set automatically. See Hello, world!.\n\n\nWhat happens if you try and return something that cannot be represented by R? Take this example, an enum Shape is defined and a function takes a string &str. Based on the value of the arugment, an enum variant is returned.\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nfn make_shape(shape: &str) -&gt; Shape {\n    match shape {\n        \"triangle\" =&gt; Shape::Triangle,\n        \"rectangle\" =&gt; Shape::Rectangle,\n        \"pentagon\" =&gt; Shape::Pentagon,\n        \"hexagon\" =&gt; Shape::Hexagon,\n        &_ =&gt; unimplemented!()\n    }\n}\nWhen this is compiled, an error occurs because extendr does not know how to convert the Shape enum into something that R can use. The error is fairly informative!\n#[extendr]\n   | ^^^^^^^^^^ the trait `ToVectorValue` is not implemented for `Shape`, which is required by `extendr_api::Robj: From&lt;Shape&gt;`\n   |\n   = help: the following other types implement trait `ToVectorValue`:\n             bool\n             i8\n             i16\n             i32\n             i64\n             usize\n             u8\n             u16\n           and 45 others\n   = note: required for `extendr_api::Robj` to implement `From&lt;Shape&gt;`\n   = note: this error originates in the attribute macro `extendr` \nIt tells you that Shape does not implement the ToVectorValue trait. The ToVectorValue trait is what enables items from Rust to be returned to R.",
-    "crumbs": [
-      "extendR: User guide",
-      "Making Rust items available to R"
-    ]
-  },
-  {
-    "objectID": "extendr-macro.html#tovectorvalue-trait",
-    "href": "extendr-macro.html#tovectorvalue-trait",
-    "title": "Making Rust items available to R",
-    "section": "ToVectorValue trait",
-    "text": "ToVectorValue trait\nIn order for an item to be returned from a function marked with the #[extendr] attribute macro, it must be able to be turned into an R object. In extendr, the struct Robj is a catch all for any type of R object.\n\n\n\n\n\n\nNote\n\n\n\nFor those familiar with PyO3, the Robj struct is similar in concept to the PyAny struct.\n\n\nThe ToVectorValue trait is what is used to convert Rust items into R objects. The trait is implemented on a number of standard Rust types such as i32, f64, usize, String and more (see all foreign implementations here) which enables these functions to be returned from a Rust function marked with #[extendr].\n\n\n\n\n\n\nNote\n\n\n\nIn essence, all items that are returned from a function must be able to be turned into an Robj. Other extendr types such as List, for example, have a From&lt;T&gt; for Robj implementation that defines how it is converted into an Robj.\n\n\nThis means that with a little extra work, the Shape enum can be returned to R. To do so, the #[extendr] macro needs to be added to an impl block.",
-    "crumbs": [
-      "extendR: User guide",
-      "Making Rust items available to R"
-    ]
-  },
-  {
-    "objectID": "extendr-macro.html#exporting-impl-blocks",
-    "href": "extendr-macro.html#exporting-impl-blocks",
-    "title": "Making Rust items available to R",
-    "section": "Exporting impl blocks",
-    "text": "Exporting impl blocks\nThe other supported item that can be made available to R is an impl block. impl is a keyword that allows you to implement a trait or an inherent implementation. The #[extendr] macro works with inherent implementations. These are impls on a type such as an enum or a struct. extendr does not support using #[extendr] on trait impls.\n\n\n\n\n\n\nNote\n\n\n\nYou can only add an inherent implementation on a type that you have own and not provided by a third party crate. This would violate the orphan rules.\n\n\nContinuing with the Shape example, this enum alone cannot be returned to R. For example, the following code will result in a compilation error\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nfn make_shape(shape: &str) -&gt; Shape {\n    match shape {\n        \"triangle\" =&gt; Shape::Triangle,\n        \"rectangle\" =&gt; Shape::Rectangle,\n        \"pentagon\" =&gt; Shape::Pentagon,\n        \"hexagon\" =&gt; Shape::Hexagon,\n        &_ =&gt; unimplemented!()\n    }\n}\nerror[E0277]: the trait bound `Shape: ToVectorValue` is not satisfied\n  --&gt; src/lib.rs:19:1\n   |\n19 | #[extendr]\n   | ^^^^^^^^^^ the trait `ToVectorValue` is not implemented for `Shape`, which is required by `extendr_api::Robj: From&lt;Shape&gt;`\n   |\nHowever, if an impl block is added to the Shape enum, it can be returned to R.\n\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nimpl Shape {\n    fn new(x: &str) -&gt; Self {\n        match x {\n            \"triangle\" =&gt; Self::Triangle,\n            \"rectangle\" =&gt; Self::Rectangle,\n            \"pentagon\" =&gt; Self::Pentagon,\n            \"hexagon\" =&gt; Self::Hexagon,\n            &_ =&gt; unimplemented!(),\n        }\n    }\n\n    fn n_coords(&self) -&gt; usize {\n        match &self {\n            Shape::Triangle =&gt; 3,\n            Shape::Rectangle =&gt; 4,\n            Shape::Pentagon =&gt; 4,\n            Shape::Hexagon =&gt; 5,\n        }\n    }\n}\n\nIn this example two new methods are added to the Shape enum. The first new() is like the make_shape() function that was shown earlier: it takes a &str and returns an enum variant. Now that the enum has an impl block with #[extendr] attribute macro, it can be exported to R by inclusion in the extendr_module! {} macro.\nextendr_module! {\n    mod hellorust;\n    impl Shape;\n}\nDoing so creates an environment in your package called Shape. The environment contains all of the methods that are available to you.\n\n\n\n\n\n\nTip\n\n\n\nThere are use cases where you may not want to expose any methods but do want to make it possible to return a struct or an enum to the R. You can do this by adding an empty impl block with the #[extendr] attribute macro.\n\n\nIf you run as.list(Shape) you will see that there are two functions in the environment which enable you to call the methods defined in the impl block. You might think that this feel like an R6 object and you’d be right because an R6 object essentially is an environment!\n\nas.list(Shape)\n\n$n_coords\nfunction () \n.Call(\"wrap__Shape__n_coords\", self, PACKAGE = \"librextendr1.dylib\")\n\n$new\nfunction (x) \n.Call(\"wrap__Shape__new\", x, PACKAGE = \"librextendr1.dylib\")\n\n\nCalling the new() method instantiates a new enum variant.\n\ntri &lt;- Shape$new(\"triangle\")\ntri\n\n&lt;pointer: 0x13373d320&gt;\nattr(,\"class\")\n[1] \"Shape\"\n\n\nThe newly made tri object is an external pointer to the Shape enum in Rust. This pointer has the same methods as the Shape environment—though they cannot be seen in the same way. For example you can run the n_coords() method on the newly created object.\n\ntri$n_coords()\n\n[1] 3\n\n\n\n\n\n\n\n\nTip\n\n\n\nTo make the methods visible to the Shape class you can define a .DollarNames method which will allow you to preview the methods and attributes when using the $ syntax. This is very handy to define when making an impl a core part of your package.\n\n.DollarNames.Shape = function(env, pattern = \"\") {\n  ls(Shape, pattern = pattern)\n}\n\n\n\n\nimpl ownership\nAdding the #[extendr] macro to an impl allows the struct or enum to be made available to R as an external pointer. Once you create an external pointer, that is then owned by R. So you can only get references to it or mutable references. If you need an owned version of the type, then you will need to clone it.",
-    "crumbs": [
-      "extendR: User guide",
-      "Making Rust items available to R"
-    ]
-  },
-  {
-    "objectID": "extendr-macro.html#accessing-exported-impls-from-rust",
-    "href": "extendr-macro.html#accessing-exported-impls-from-rust",
-    "title": "Making Rust items available to R",
-    "section": "Accessing exported impls from Rust",
-    "text": "Accessing exported impls from Rust\nInvariably, if you have made an impl available to R via the #[extendr] macro, you may want to define functions that take the impl as a function argument.\nDue to R owning the impl’s external pointer, these functions cannot take an owned version of the impl as an input. For example trying to define a function that subtracts an integer from the n_coords() output like below returns a compiler error.\n#[extendr]\nfn subtract_coord(x: Shape, n: i32) -&gt; i32 {\n    (x.n_coords() as i32) - n\n}\nthe trait bound `Shape: extendr_api::FromRobj&lt;'_&gt;` is not satisfied\n  --&gt; src/lib.rs:53:22\n   |\n   | fn subtract_coord(x: Shape, n: i32) -&gt; i32 {\n   |                      ^^^^^ the trait `extendr_api::FromRobj&lt;'_&gt;` is not implemented for `Shape`\n   |\nhelp: consider borrowing here\n   |\n   | fn subtract_coord(x: &Shape, n: i32) -&gt; i32 {\n   |                      +\n   | fn subtract_coord(x: &mut Shape, n: i32) -&gt; i32 {\n   |                      ++++\nAs most often, the compiler’s suggestion is a good one. Use &Shape to use a reference.",
-    "crumbs": [
-      "extendR: User guide",
-      "Making Rust items available to R"
-    ]
-  },
-  {
-    "objectID": "extendr-macro.html#externalptr-returning-arbitrary-rust-types",
-    "href": "extendr-macro.html#externalptr-returning-arbitrary-rust-types",
-    "title": "Making Rust items available to R",
-    "section": "ExternalPtr: returning arbitrary Rust types",
-    "text": "ExternalPtr: returning arbitrary Rust types\nIn the event that you need to return a Rust type to R that doesn’t have a compatible impl or is a type that you don’t own, you can use ExternalPtr&lt;T&gt;. The ExternalPtr struct allows any item to be captured as a pointer and returned to R.\nHere, for example, an ExternalPtr&lt;Shape&gt; is returned from the shape_ptr() function.\n\n\n\n\n\n\nTip\n\n\n\nAnything that is wrapped in ExternalPtr&lt;T&gt; must implement the Debug trait.\n\n\n\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nfn shape_ptr(shape: &str) -&gt; ExternalPtr&lt;Shape&gt; {\n    let variant = match shape {\n        \"triangle\" =&gt; Shape::Triangle,\n        \"rectangle\" =&gt; Shape::Rectangle,\n        \"pentagon\" =&gt; Shape::Pentagon,\n        \"hexagon\" =&gt; Shape::Hexagon,\n        &_ =&gt; unimplemented!(),\n    };\n\n    ExternalPtr::new(variant)\n}\n\nUsing an external pointer, however, is far more limiting than the impl block. For example, you cannot access and of its methods.\n\ntri_ptr &lt;- shape_ptr(\"triangle\")\ntri_ptr$n_coords()\n\nError in tri_ptr$n_coords: object of type 'externalptr' is not subsettable\n\n\nTo use an ExternalPtr&lt;T&gt;, you have to go through a bit of extra work for it.\n#[extendr]\nfn n_coords_ptr(x: Robj) -&gt; i32 {\n    let shape = TryInto::&lt;ExternalPtr&lt;Shape&gt;&gt;::try_into(x); \n    \n    match shape {\n        Ok(shp) =&gt; shp.n_coords() as i32,\n        Err(_) =&gt; 0\n    }\n}\nThis function definition takes an Robj and from it, tries to create an ExternalPtr&lt;Shape&gt;. Then, if the conversion did not error, it returns the number of coordinates as an i32 (R’s version of an integer) and if there was an error converting, it returns 0.\n\ntri_ptr &lt;- shape_ptr(\"triangle\")\n\nn_coords_ptr(tri_ptr)\n\n[1] 3\n\nn_coords_ptr(list())\n\n[1] 0\n\n\nFor a good example of using ExternalPtr&lt;T&gt; within an R package, refer to the b64 R package.",
-    "crumbs": [
-      "extendR: User guide",
-      "Making Rust items available to R"
-    ]
-  },
-  {
-    "objectID": "hello-world.html",
-    "href": "hello-world.html",
-    "title": "Hello, world!",
-    "section": "",
-    "text": "Once you have Rust and {rextendr} installed, you can begin creating Rust-powered R packages.\nThe first step to using extendr is to create an R package. It is recommend to create a new package using the package {usethis}.\nusethis::create_package(\"hellorust\")\nIf you are in the RStudio IDE, a new R project will be opened up for you with the file structure of a new R package.\n.\n├── DESCRIPTION\n├── NAMESPACE\n├── R\n└── hellorust.Rproj\nNow that you have a new R package, you can add extendr to it.\nrextendr::use_extendr()\nThis will add an extendr package template to the R packge. We will go through the package structure in more depth shortly.\n.\n├── DESCRIPTION\n├── NAMESPACE\n├── R\n│   └── extendr-wrappers.R\n├── hellorust.Rproj\n└── src\n    ├── Makevars\n    ├── Makevars.ucrt\n    ├── Makevars.win\n    ├── entrypoint.c\n    ├── hellorust-win.def\n    └── rust\n        ├── Cargo.toml\n        └── src\n            └── lib.rs\nInside of the file src/rust/src/lib.rs is a hello world function.\n/// Return string `\"Hello world!\"` to R.\n/// @export\n#[extendr]\nfn hello_world() -&gt; &'static str {\n    \"Hello world!\"\n}\n\n\n\n\n\n\nTip\n\n\n\nNote that roxygen2 can be used with Rust documentation comments /// instead of //.\n\n\nThe function is made available to R via the macro extendr_module!.\n// Macro to generate exports.\n// This ensures exported functions are registered with R.\n// See corresponding C code in `entrypoint.c`.\nextendr_module! {\n    mod hellorust;\n    fn hello_world;\n}\nUse the function rextendr::document() to automatically create R function wrappers to call the Rust function. This will recompile the Rust library.\nrextendr::document()\n#&gt;  rextendr::document()\n#&gt; ✔ Saving changes in the open files.\n#&gt; ℹ Generating extendr wrapper functions for package: hellorust.\n#&gt; ℹ Re-compiling hellorust (debug build)\n#&gt; .... truncated ....\n#&gt; ─  DONE (hellorust)\n#&gt; ✔ Writing 'R/extendr-wrappers.R'\n#&gt; ℹ Updating hellorust documentation\n#&gt; Writing NAMESPACE\n#&gt; ℹ Loading hellorust\n#&gt; Writing NAMESPACE\n#&gt; Writing hellorust-package.Rd\n#&gt; Writing hello_world.Rd\nThe file R/extendr-wrappers.R was updated and now contains\n#' Return string `\"Hello world!\"` to R.\n#' @export\nhello_world &lt;- function() .Call(wrap__hello_world)\nRun devtools::load_all() to make the function available to your session.\ndevtools::load_all()\n#&gt; ℹ Loading hellorust\nThe package hellorust has been loaded and now you can run hello_world()\nhello_world()\n#&gt; \"Hello world!\"",
-    "crumbs": [
-      "extendR: User guide",
-      "Hello, world!"
-    ]
-  },
-  {
     "objectID": "data-types.html",
     "href": "data-types.html",
     "title": "R to Rust type mapping",
@@ -264,6 +96,306 @@
     "crumbs": [
       "extendR: User guide",
       "Conversion to and from R data"
+    ]
+  },
+  {
+    "objectID": "project-structure.html",
+    "href": "project-structure.html",
+    "title": "extendr project structure",
+    "section": "",
+    "text": "A extendr-powered R package has a fairly unique structure. This section briefly outlines the structure of an extendr package and the important files.\nextendr works by creating a Rust library crate in src/rust that is defined by src/rust/Cargo.toml.\nNote the crate-type = [ 'staticlib' ]. When this library is compiled, it creates a static library which can then be called from R.",
+    "crumbs": [
+      "extendR: User guide",
+      "extendr project structure"
+    ]
+  },
+  {
+    "objectID": "project-structure.html#controlling-exports-to-r-lib.rs",
+    "href": "project-structure.html#controlling-exports-to-r-lib.rs",
+    "title": "extendr project structure",
+    "section": "Controlling exports to R: lib.rs",
+    "text": "Controlling exports to R: lib.rs\nThe lib.rs file determines what will be exposed to your R package. The extendr_module! macro in lib.rs controls what will have wrappers provided to your R package.\nextendr_module! {\n    mod hellorust;\n    fn hello_world;\n}\nThe mod hellorust is the name of the R package. Additional functions, impls, and modules can also be added to this macro.",
+    "crumbs": [
+      "extendR: User guide",
+      "extendr project structure"
+    ]
+  },
+  {
+    "objectID": "project-structure.html#building-the-package-makevars",
+    "href": "project-structure.html#building-the-package-makevars",
+    "title": "extendr project structure",
+    "section": "Building the package: Makevars",
+    "text": "Building the package: Makevars\nWhen creating an R package that uses compiled code, a file called Makevars is used.\n\n\n\n\n\n\nNote\n\n\n\nSee Using Makevars in Writing R Extensions for a thorough discussion.\n\n\nMakevars is used as a preprocessing step for compiling an R package. The files Makevars and Makevars.win compile the Rust library in src/rust, and link to the library.\n\n\n\n\n\n\nTip\n\n\n\nMakevars is used for *nix operating systems and Makevars.win is used for Windows.",
+    "crumbs": [
+      "extendR: User guide",
+      "extendr project structure"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "extendR: User guide",
+    "section": "",
+    "text": "The extendr suite of software packages provides a set of utilities for bridging the R and Rust programming languages, making it easier for users to pass data between them using automatically generated bindings. In so doing, it overcomes a fundamental challenge of all such language bindings, namely, the fact that the two languages make different design choices regarding the representation of data types. Most of the time, data types in Rust and R map quite nicely. In other cases, it takes careful consideration. And, in a few unfortunate cases, it is not even possible. Generally speaking, though, if an R version of a Rust type exists, extendr will do that mapping for you, but you will on occasion have to do some of that work yourself.\nTo help guide you toward best practices here, we have put together this website as a user guide, with lots of examples showcasing all things extendr, Rust, and R, as well as the confluence of all three.\nSee https://extendr.github.io/ for more information.\n\n\nIf you have any questions or are looking for advice, feel free to join the community’s Discord server. You can usually find the maintainers there, as well as other helpful extendr users."
+  },
+  {
+    "objectID": "index.html#community-support",
+    "href": "index.html#community-support",
+    "title": "extendR: User guide",
+    "section": "",
+    "text": "If you have any questions or are looking for advice, feel free to join the community’s Discord server. You can usually find the maintainers there, as well as other helpful extendr users."
+  },
+  {
+    "objectID": "getting-started.html",
+    "href": "getting-started.html",
+    "title": "Getting started",
+    "section": "",
+    "text": "To start building R packages using extendr you will need to have R and Rust toolchain installed on your machine.",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#r",
+    "href": "getting-started.html#r",
+    "title": "Getting started",
+    "section": "R",
+    "text": "R\nEnsure that you have a relatively new version of R installed. It is recommended to use a moderately new version (&gt;= 4.2.0).\n\n\n\n\n\n\nNote\n\n\n\nInstall the newest version of R from CRAN\n\n\nThe R package {rextendr} is used to simplify the scaffolding of extendr projects as well as document Rust functions and objects. Install the development version of {rextendr} to have the most up to date changes.\n# install pak if not available\nif (!requireNamespace(\"pak\")) install.packages(\"pak\")\n\n# install development version of rextendr\npak::pak(\"extendr/rextendr\")",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#rust",
+    "href": "getting-started.html#rust",
+    "title": "Getting started",
+    "section": "Rust",
+    "text": "Rust\nNext, ensure that you have Rust installed. extendr has a minimum supported Rust version (msrv) of 1.64. Follow the rustup installation instructions to install Rust.\n\n\n\n\n\n\nTip\n\n\n\nIf you are using Windows, you will also need to install the stable-x86_64-pc-windows-msvc toolchain. From your terminal run the following\nrustup toolchain install stable-x86_64-pc-windows-msvc\nrustup default stable-x86_64-pc-windows-msvc\n\n\nOnce you have installed the Rust toolchain, ensure it is compatible with extendr.\nFrom R run:\n\nrextendr::rust_sitrep()\n\nRust infrastructure sitrep:\n✔ \"rustup\": 1.26.0 (5af9b9484 2023-04-05)\n✔ \"cargo\": 1.79.0-nightly (499a61ce7 2024-03-26)\nℹ host: aarch64-apple-darwin\nℹ toolchains: stable-aarch64-apple-darwin, nightly-aarch64-apple-darwin\n  (default), and 1.64.0-aarch64-apple-darwin\nℹ targets: aarch64-apple-darwin and wasm32-unknown-unknown\n\n\nIf there are no issues reported by the situation report (sitrep), you are ready to start building Rust-powered R packages!",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "getting-started.html#post-script-tools-for-writing-rust",
+    "href": "getting-started.html#post-script-tools-for-writing-rust",
+    "title": "Getting started",
+    "section": "Post Script: Tools for Writing Rust",
+    "text": "Post Script: Tools for Writing Rust\nIf you are new to writing Rust, this following section contains some tips.\nFirst, it is recommended to install a configurable code editor like Visual Studio Code (VS Code).\nOnce you have VS Code, or another text editor, installed you will need the rust-analyzer. The rust-analyzer will provide type hinting and auto-completion suggestions. It is very helpful!",
+    "crumbs": [
+      "extendR: User guide",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "hello-world.html",
+    "href": "hello-world.html",
+    "title": "Hello, world!",
+    "section": "",
+    "text": "Once you have Rust and {rextendr} installed, you can begin creating Rust-powered R packages.\nThe first step to using extendr is to create an R package. It is recommend to create a new package using the package {usethis}.\nusethis::create_package(\"hellorust\")\nIf you are in the RStudio IDE, a new R project will be opened up for you with the file structure of a new R package.\n.\n├── DESCRIPTION\n├── NAMESPACE\n├── R\n└── hellorust.Rproj\nNow that you have a new R package, you can add extendr to it.\nrextendr::use_extendr()\nThis will add an extendr package template to the R packge. We will go through the package structure in more depth shortly.\n.\n├── DESCRIPTION\n├── NAMESPACE\n├── R\n│   └── extendr-wrappers.R\n├── hellorust.Rproj\n└── src\n    ├── Makevars\n    ├── Makevars.ucrt\n    ├── Makevars.win\n    ├── entrypoint.c\n    ├── hellorust-win.def\n    └── rust\n        ├── Cargo.toml\n        └── src\n            └── lib.rs\nInside of the file src/rust/src/lib.rs is a hello world function.\n/// Return string `\"Hello world!\"` to R.\n/// @export\n#[extendr]\nfn hello_world() -&gt; &'static str {\n    \"Hello world!\"\n}\n\n\n\n\n\n\nTip\n\n\n\nNote that roxygen2 can be used with Rust documentation comments /// instead of //.\n\n\nThe function is made available to R via the macro extendr_module!.\n// Macro to generate exports.\n// This ensures exported functions are registered with R.\n// See corresponding C code in `entrypoint.c`.\nextendr_module! {\n    mod hellorust;\n    fn hello_world;\n}\nUse the function rextendr::document() to automatically create R function wrappers to call the Rust function. This will recompile the Rust library.\nrextendr::document()\n#&gt;  rextendr::document()\n#&gt; ✔ Saving changes in the open files.\n#&gt; ℹ Generating extendr wrapper functions for package: hellorust.\n#&gt; ℹ Re-compiling hellorust (debug build)\n#&gt; .... truncated ....\n#&gt; ─  DONE (hellorust)\n#&gt; ✔ Writing 'R/extendr-wrappers.R'\n#&gt; ℹ Updating hellorust documentation\n#&gt; Writing NAMESPACE\n#&gt; ℹ Loading hellorust\n#&gt; Writing NAMESPACE\n#&gt; Writing hellorust-package.Rd\n#&gt; Writing hello_world.Rd\nThe file R/extendr-wrappers.R was updated and now contains\n#' Return string `\"Hello world!\"` to R.\n#' @export\nhello_world &lt;- function() .Call(wrap__hello_world)\nRun devtools::load_all() to make the function available to your session.\ndevtools::load_all()\n#&gt; ℹ Loading hellorust\nThe package hellorust has been loaded and now you can run hello_world()\nhello_world()\n#&gt; \"Hello world!\"",
+    "crumbs": [
+      "extendR: User guide",
+      "Hello, world!"
+    ]
+  },
+  {
+    "objectID": "extendr-macro.html",
+    "href": "extendr-macro.html",
+    "title": "Making Rust items available to R",
+    "section": "",
+    "text": "The power of extendr is in its ability to use Rust from R. The #[extendr] macro is what determines what is exported to R from Rust. This section covers the basic usage of the #[extendr] macro.\n#[extendr] is what is referred to as an attribute macro (which itself is a type of procedural macro). An attribute macro is attached to an item such as a function, struct, enum, or impl.\nThe #[extendr] attribute macro indicates that an item should be made available to R. However, it can only be used with a function or an impl block.",
+    "crumbs": [
+      "extendR: User guide",
+      "Making Rust items available to R"
+    ]
+  },
+  {
+    "objectID": "extendr-macro.html#exporting-functions",
+    "href": "extendr-macro.html#exporting-functions",
+    "title": "Making Rust items available to R",
+    "section": "Exporting functions",
+    "text": "Exporting functions\nIn order to make a function available to R, two things must happen. First, the #[extendr] macro must be attached to the function. For example, you can create a function answer_to_life()\n\n\n\n\n\n\nNote\n\n\n\n\n\nIn the Hitchhiker’s Guide to the Galaxy, the number 42 is the answer to the universe. See this fun article from Scientific American\n\n\n\n#[extendr]\nfn answer_to_life() -&gt; i32 {\n    42\n}\nBy adding the #[extendr] attribute macro to the answer_to_life() function, we are indicating that this function has to be compatible with R. This alone, however, does not make the function available to R. It must be made available via the extendr_module! {} macro in lib.rs.\nextendr_module! {\n    mod hellorust;\n    fn answer_to_life;\n}\n\n\n\n\n\n\nTip\n\n\n\nEverything that is made available in the extendr_module! {} macro in lib.rs must be compatible with R as indicated by the #[extendr] macro. Note that the module name mod hellorust must be the name of the R package that this is part of. If you have created your package with rextendr::use_extendr() this should be set automatically. See Hello, world!.\n\n\nWhat happens if you try and return something that cannot be represented by R? Take this example, an enum Shape is defined and a function takes a string &str. Based on the value of the arugment, an enum variant is returned.\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nfn make_shape(shape: &str) -&gt; Shape {\n    match shape {\n        \"triangle\" =&gt; Shape::Triangle,\n        \"rectangle\" =&gt; Shape::Rectangle,\n        \"pentagon\" =&gt; Shape::Pentagon,\n        \"hexagon\" =&gt; Shape::Hexagon,\n        &_ =&gt; unimplemented!()\n    }\n}\nWhen this is compiled, an error occurs because extendr does not know how to convert the Shape enum into something that R can use. The error is fairly informative!\n#[extendr]\n   | ^^^^^^^^^^ the trait `ToVectorValue` is not implemented for `Shape`, which is required by `extendr_api::Robj: From&lt;Shape&gt;`\n   |\n   = help: the following other types implement trait `ToVectorValue`:\n             bool\n             i8\n             i16\n             i32\n             i64\n             usize\n             u8\n             u16\n           and 45 others\n   = note: required for `extendr_api::Robj` to implement `From&lt;Shape&gt;`\n   = note: this error originates in the attribute macro `extendr` \nIt tells you that Shape does not implement the ToVectorValue trait. The ToVectorValue trait is what enables items from Rust to be returned to R.",
+    "crumbs": [
+      "extendR: User guide",
+      "Making Rust items available to R"
+    ]
+  },
+  {
+    "objectID": "extendr-macro.html#tovectorvalue-trait",
+    "href": "extendr-macro.html#tovectorvalue-trait",
+    "title": "Making Rust items available to R",
+    "section": "ToVectorValue trait",
+    "text": "ToVectorValue trait\nIn order for an item to be returned from a function marked with the #[extendr] attribute macro, it must be able to be turned into an R object. In extendr, the struct Robj is a catch all for any type of R object.\n\n\n\n\n\n\nNote\n\n\n\nFor those familiar with PyO3, the Robj struct is similar in concept to the PyAny struct.\n\n\nThe ToVectorValue trait is what is used to convert Rust items into R objects. The trait is implemented on a number of standard Rust types such as i32, f64, usize, String and more (see all foreign implementations here) which enables these functions to be returned from a Rust function marked with #[extendr].\n\n\n\n\n\n\nNote\n\n\n\nIn essence, all items that are returned from a function must be able to be turned into an Robj. Other extendr types such as List, for example, have a From&lt;T&gt; for Robj implementation that defines how it is converted into an Robj.\n\n\nThis means that with a little extra work, the Shape enum can be returned to R. To do so, the #[extendr] macro needs to be added to an impl block.",
+    "crumbs": [
+      "extendR: User guide",
+      "Making Rust items available to R"
+    ]
+  },
+  {
+    "objectID": "extendr-macro.html#exporting-impl-blocks",
+    "href": "extendr-macro.html#exporting-impl-blocks",
+    "title": "Making Rust items available to R",
+    "section": "Exporting impl blocks",
+    "text": "Exporting impl blocks\nThe other supported item that can be made available to R is an impl block. impl is a keyword that allows you to implement a trait or an inherent implementation. The #[extendr] macro works with inherent implementations. These are impls on a type such as an enum or a struct. extendr does not support using #[extendr] on trait impls.\n\n\n\n\n\n\nNote\n\n\n\nYou can only add an inherent implementation on a type that you have own and not provided by a third party crate. This would violate the orphan rules.\n\n\nContinuing with the Shape example, this enum alone cannot be returned to R. For example, the following code will result in a compilation error\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nfn make_shape(shape: &str) -&gt; Shape {\n    match shape {\n        \"triangle\" =&gt; Shape::Triangle,\n        \"rectangle\" =&gt; Shape::Rectangle,\n        \"pentagon\" =&gt; Shape::Pentagon,\n        \"hexagon\" =&gt; Shape::Hexagon,\n        &_ =&gt; unimplemented!()\n    }\n}\nerror[E0277]: the trait bound `Shape: ToVectorValue` is not satisfied\n  --&gt; src/lib.rs:19:1\n   |\n19 | #[extendr]\n   | ^^^^^^^^^^ the trait `ToVectorValue` is not implemented for `Shape`, which is required by `extendr_api::Robj: From&lt;Shape&gt;`\n   |\nHowever, if an impl block is added to the Shape enum, it can be returned to R.\n\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nimpl Shape {\n    fn new(x: &str) -&gt; Self {\n        match x {\n            \"triangle\" =&gt; Self::Triangle,\n            \"rectangle\" =&gt; Self::Rectangle,\n            \"pentagon\" =&gt; Self::Pentagon,\n            \"hexagon\" =&gt; Self::Hexagon,\n            &_ =&gt; unimplemented!(),\n        }\n    }\n\n    fn n_coords(&self) -&gt; usize {\n        match &self {\n            Shape::Triangle =&gt; 3,\n            Shape::Rectangle =&gt; 4,\n            Shape::Pentagon =&gt; 4,\n            Shape::Hexagon =&gt; 5,\n        }\n    }\n}\n\nIn this example two new methods are added to the Shape enum. The first new() is like the make_shape() function that was shown earlier: it takes a &str and returns an enum variant. Now that the enum has an impl block with #[extendr] attribute macro, it can be exported to R by inclusion in the extendr_module! {} macro.\nextendr_module! {\n    mod hellorust;\n    impl Shape;\n}\nDoing so creates an environment in your package called Shape. The environment contains all of the methods that are available to you.\n\n\n\n\n\n\nTip\n\n\n\nThere are use cases where you may not want to expose any methods but do want to make it possible to return a struct or an enum to the R. You can do this by adding an empty impl block with the #[extendr] attribute macro.\n\n\nIf you run as.list(Shape) you will see that there are two functions in the environment which enable you to call the methods defined in the impl block. You might think that this feel like an R6 object and you’d be right because an R6 object essentially is an environment!\n\nas.list(Shape)\n\n$n_coords\nfunction () \n.Call(\"wrap__Shape__n_coords\", self, PACKAGE = \"librextendr1.dylib\")\n\n$new\nfunction (x) \n.Call(\"wrap__Shape__new\", x, PACKAGE = \"librextendr1.dylib\")\n\n\nCalling the new() method instantiates a new enum variant.\n\ntri &lt;- Shape$new(\"triangle\")\ntri\n\n&lt;pointer: 0x13373d320&gt;\nattr(,\"class\")\n[1] \"Shape\"\n\n\nThe newly made tri object is an external pointer to the Shape enum in Rust. This pointer has the same methods as the Shape environment—though they cannot be seen in the same way. For example you can run the n_coords() method on the newly created object.\n\ntri$n_coords()\n\n[1] 3\n\n\n\n\n\n\n\n\nTip\n\n\n\nTo make the methods visible to the Shape class you can define a .DollarNames method which will allow you to preview the methods and attributes when using the $ syntax. This is very handy to define when making an impl a core part of your package.\n\n.DollarNames.Shape = function(env, pattern = \"\") {\n  ls(Shape, pattern = pattern)\n}\n\n\n\n\nimpl ownership\nAdding the #[extendr] macro to an impl allows the struct or enum to be made available to R as an external pointer. Once you create an external pointer, that is then owned by R. So you can only get references to it or mutable references. If you need an owned version of the type, then you will need to clone it.",
+    "crumbs": [
+      "extendR: User guide",
+      "Making Rust items available to R"
+    ]
+  },
+  {
+    "objectID": "extendr-macro.html#accessing-exported-impls-from-rust",
+    "href": "extendr-macro.html#accessing-exported-impls-from-rust",
+    "title": "Making Rust items available to R",
+    "section": "Accessing exported impls from Rust",
+    "text": "Accessing exported impls from Rust\nInvariably, if you have made an impl available to R via the #[extendr] macro, you may want to define functions that take the impl as a function argument.\nDue to R owning the impl’s external pointer, these functions cannot take an owned version of the impl as an input. For example trying to define a function that subtracts an integer from the n_coords() output like below returns a compiler error.\n#[extendr]\nfn subtract_coord(x: Shape, n: i32) -&gt; i32 {\n    (x.n_coords() as i32) - n\n}\nthe trait bound `Shape: extendr_api::FromRobj&lt;'_&gt;` is not satisfied\n  --&gt; src/lib.rs:53:22\n   |\n   | fn subtract_coord(x: Shape, n: i32) -&gt; i32 {\n   |                      ^^^^^ the trait `extendr_api::FromRobj&lt;'_&gt;` is not implemented for `Shape`\n   |\nhelp: consider borrowing here\n   |\n   | fn subtract_coord(x: &Shape, n: i32) -&gt; i32 {\n   |                      +\n   | fn subtract_coord(x: &mut Shape, n: i32) -&gt; i32 {\n   |                      ++++\nAs most often, the compiler’s suggestion is a good one. Use &Shape to use a reference.",
+    "crumbs": [
+      "extendR: User guide",
+      "Making Rust items available to R"
+    ]
+  },
+  {
+    "objectID": "extendr-macro.html#externalptr-returning-arbitrary-rust-types",
+    "href": "extendr-macro.html#externalptr-returning-arbitrary-rust-types",
+    "title": "Making Rust items available to R",
+    "section": "ExternalPtr: returning arbitrary Rust types",
+    "text": "ExternalPtr: returning arbitrary Rust types\nIn the event that you need to return a Rust type to R that doesn’t have a compatible impl or is a type that you don’t own, you can use ExternalPtr&lt;T&gt;. The ExternalPtr struct allows any item to be captured as a pointer and returned to R.\nHere, for example, an ExternalPtr&lt;Shape&gt; is returned from the shape_ptr() function.\n\n\n\n\n\n\nTip\n\n\n\nAnything that is wrapped in ExternalPtr&lt;T&gt; must implement the Debug trait.\n\n\n\n#[derive(Debug)]\nenum Shape {\n    Triangle,\n    Rectangle,\n    Pentagon,\n    Hexagon,\n}\n\n#[extendr]\nfn shape_ptr(shape: &str) -&gt; ExternalPtr&lt;Shape&gt; {\n    let variant = match shape {\n        \"triangle\" =&gt; Shape::Triangle,\n        \"rectangle\" =&gt; Shape::Rectangle,\n        \"pentagon\" =&gt; Shape::Pentagon,\n        \"hexagon\" =&gt; Shape::Hexagon,\n        &_ =&gt; unimplemented!(),\n    };\n\n    ExternalPtr::new(variant)\n}\n\nUsing an external pointer, however, is far more limiting than the impl block. For example, you cannot access and of its methods.\n\ntri_ptr &lt;- shape_ptr(\"triangle\")\ntri_ptr$n_coords()\n\nError in tri_ptr$n_coords: object of type 'externalptr' is not subsettable\n\n\nTo use an ExternalPtr&lt;T&gt;, you have to go through a bit of extra work for it.\n#[extendr]\nfn n_coords_ptr(x: Robj) -&gt; i32 {\n    let shape = TryInto::&lt;ExternalPtr&lt;Shape&gt;&gt;::try_into(x); \n    \n    match shape {\n        Ok(shp) =&gt; shp.n_coords() as i32,\n        Err(_) =&gt; 0\n    }\n}\nThis function definition takes an Robj and from it, tries to create an ExternalPtr&lt;Shape&gt;. Then, if the conversion did not error, it returns the number of coordinates as an i32 (R’s version of an integer) and if there was an error converting, it returns 0.\n\ntri_ptr &lt;- shape_ptr(\"triangle\")\n\nn_coords_ptr(tri_ptr)\n\n[1] 3\n\nn_coords_ptr(list())\n\n[1] 0\n\n\nFor a good example of using ExternalPtr&lt;T&gt; within an R package, refer to the b64 R package.",
+    "crumbs": [
+      "extendR: User guide",
+      "Making Rust items available to R"
+    ]
+  },
+  {
+    "objectID": "using-rust-types.html",
+    "href": "using-rust-types.html",
+    "title": "Using Rust types in R",
+    "section": "",
+    "text": "This tutorial demonstrates some of the basics of passing data types back and forth between Rust and R. This includes all of the following:\nWe’ll start with examples showing how to pass R types as explicit Rust types. This is useful for demonstration purposes, but it does ignore one very very big issue, and that’s missing values. Rust data types do not allow for missing values, so they have to be handled carefully. Fortunately, extendr offers its own data types built on top of the Rust types to do that for you. For this reason, it is strongly recommended that you work with the extendr types wherever possible. However, when first getting comfortable with extendr, and possible even Rust, it may feel more comfortable to work with Rust native types.",
+    "crumbs": [
+      "extendR: User guide",
+      "Using Rust types in R"
+    ]
+  },
+  {
+    "objectID": "using-rust-types.html#scalar-type-mapping-with-rust-types",
+    "href": "using-rust-types.html#scalar-type-mapping-with-rust-types",
+    "title": "Using Rust types in R",
+    "section": "Scalar Type Mapping with Rust Types",
+    "text": "Scalar Type Mapping with Rust Types\nIn R, there is no such thing as a scalar value. Everything is a vector. When using a scalar value in R, that is really a length one vector. In Rust, however, scalar values are the building blocks of everything.\nBelow is a mapping of scalar values between R, extendr, and Rust.\n\n\n\nR type\nextendr type\nRust type\n\n\n\n\ninteger(1)\nRint\ni32\n\n\ndouble(1)\nRfloat\nf64\n\n\nlogical(1)\nRbool\nbool\n\n\ncomplex(1)\nRcplx\nComplex&lt;f64&gt;\n\n\ncharacter(1)\nRstr\nString\n\n\n\nTo see how these scalars get passed back and forth between Rust and R, we’ll first explore Rust’s f64 value which is a 64-bit float. This is equivalent to R’s double(1). We’ll write a very simple Rust function that prints the value of the input and does not return anything.\n\n#[extendr]\nfn scalar_double(x: f64) { \n    rprintln!(\"The value of x is {x}\"); \n}\n\n\n\n\n\n\n\nNote\n\n\n\nNote the use of rprintln!() instead of the println!() macro. Using println!() will not always be captured by the R console. Using rprintln!() will ensure that it is.\n\n\nIf you are not working inside of an extendr R package, you can create this function locally using rextendr::rust_function().\nrextendr::rust_function(\"\nfn scalar_double(x: f64) { \n    rprintln!(\"The value of x is {x}\"); \n}\n\")\nTry calling this function on a single double value.\n\nscalar_double(4.2)\n\nThe value of x is 4.2\n\n\nA couple of things to note with this example. First, x: f64 tells Rust that the type of x being passed to the function is a single double vector or “float” value. Second, rprintln!(\"{}\", x); is an extendr macro (the give-away for this is the !) that makes it easier to print information from Rust to the console in R. R users will perhaps notice that the syntax is vaguely {glue}-like in that the value of x is inserted into the curly brackets.\nNow, what if, rather than printing the value of x to the R console, we wanted instead to return that value to R? To do that, we just need to let Rust know what type is being returned by our function. This is done with the -&gt; type notation. The extendr crate knows how to handle the scalar f64 type and pass it to R as double.\n\nfn scalar_double(x: f64) -&gt; f64 { \n    x \n}\n\n\nx &lt;- scalar_double(4.2)\n\nThe value of x is 4.2\n\ntypeof(x)\n\n[1] \"NULL\"\n\nx + 1\n\nnumeric(0)\n\n\n\nAdditional examples\nWe can extend this example to i32, bool and String values in Rust.\n\n#[extendr]\nfn scalar_integer(x: i32) -&gt; i32 { x }\n\n#[extendr]\nfn scalar_logical(x: bool) -&gt; bool { x }\n\n#[extendr]\nfn scalar_character(x: String) -&gt; String { x }\n\n\nscalar_integer(4L)\n\n[1] 4\n\nscalar_logical(TRUE)\n\n[1] TRUE\n\nscalar_character(\"Hello world!\")\n\n[1] \"Hello world!\"",
+    "crumbs": [
+      "extendR: User guide",
+      "Using Rust types in R"
+    ]
+  },
+  {
+    "objectID": "using-rust-types.html#vector-type-mapping-with-rust-types",
+    "href": "using-rust-types.html#vector-type-mapping-with-rust-types",
+    "title": "Using Rust types in R",
+    "section": "Vector Type Mapping with Rust Types",
+    "text": "Vector Type Mapping with Rust Types\nWhat happens if we try to pass more than one value to scalar_double()?\n\nscalar_double(c(4.2, 1.3, 2.5))\n\nError in scalar_double(c(4.2, 1.3, 2.5)): Input must be of length 1. Vector of length &gt;1 given.\n\n\nIt errors because the function expects a scalar of the f64 type, not a vector of f64.\nIn this section, we show you how to pass Rust vectors between R and Rust.\n\n\n\n\n\n\nImportant\n\n\n\nWhile using a Rust vector is possible in some cases, it is strongly not recommended. Instead, extendr types should be used as they provide access directly to R objectes. Whereas using Rust vectors requires additional allocations.\n\n\nThe syntax is basically the same as with scalars, with just some minor changes. We’ll use doubles again to demonstrate this.\nFor reference, below are the type of Rust vectors that can be utilized with extendr.\n\n\n\nR type\nextendr type\nRust type\n\n\n\n\ninteger()\nIntegers\nVec&lt;i32&gt;\n\n\ndouble()\nDoubles\nVec&lt;f64&gt;\n\n\ncomplex()\nComplexes\nVec&lt;Complex&lt;f64&gt;&gt;\n\n\ncharacter()\nStrings\nVec&lt;String&gt;\n\n\nraw()\nRaw\n&[u8]\n\n\nlogical()\nLogicals\n\n\n\nlist()\nList\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nYou might have anticipated Vec&lt;bool&gt; to be a supported Rust vector type. This is not possible because in R, logical vectors do not contain only true and false like Rust’s bool type. They also can be an NA value which has no corresponding representation in Rust.\n\n\nBelow defines Rust function which takes in a vector of f64 values and prints them out.\n\n#[extendr]\nfn vector_double(x: Vec&lt;f64&gt;) {\n    rprintln!(\"The values of x are {x:?}\");\n}\n\nThat function can be called from R which prints the Debug format of the vector.\n\n\n\n\n\n\nTip\n\n\n\nRust’s vector do not implement the Display trait so the debug format (:?) is used.\n\n\n\nvector_double(c(4.2, 1.3, 2.5))\n\nThe values of x are [4.2, 1.3, 2.5]\n\n\nReturning values using Rust follows the same rules as R. You do not need to explicitly return a value as long as the last item in an expression is not followed by a ;.\n\n#[extendr]\nfn vector_double(x: Vec&lt;f64&gt;) -&gt; Vec&lt;f64&gt; { \n    x \n}\n\nCalling the function returns the input as a double vector\n\nx &lt;- vector_double(c(4.2, 1.3, 2.5))\ntypeof(x)\n\n[1] \"double\"\n\nx + 1\n\n[1] 5.2 2.3 3.5\n\n\n\nAdditional examples\nThese same principles can be extended to other supported vector types such as Vec&lt;i32&gt; and Vec&lt;String&gt;.\n\n#[extendr]\nfn vector_integer(x: Vec&lt;i32&gt;) -&gt; Vec&lt;i32&gt; { \n    x\n}\n\n#[extendr]\nfn vector_character(x: Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {\n    x \n}\n\n\nvector_integer(c(4L, 6L, 8L))\n\n[1] 4 6 8\n\nvector_character(c(\"Hello world!\", \"Hello extendr!\", \"Hello R!\"))\n\n[1] \"Hello world!\"   \"Hello extendr!\" \"Hello R!\"",
+    "crumbs": [
+      "extendR: User guide",
+      "Using Rust types in R"
+    ]
+  },
+  {
+    "objectID": "using-rust-types.html#missing-values",
+    "href": "using-rust-types.html#missing-values",
+    "title": "Using Rust types in R",
+    "section": "Missing values",
+    "text": "Missing values\nIn Rust, missing values do not exist this in part why using Rust types alone is insufficient. Below a simple function which adds 1 to the input is defined.\n\n#[extendr]\nfn plus_one(x: f64) -&gt; f64 { \n    x + 1.0 \n}\n\nRunning this using a missing value results in an error.\n\nplus_one(NA_real_)\n\nError in plus_one(NA_real_): Input must not be NA.\n\n\nThese extendr types, however, can be utilized much like a normal f64 that is NA aware. You will see that we have replaced the Rust type f64 with the extendr type Rfloat. Since Rfloat maps to a scalar value and not vector, the conversion needs to be handled more delicately. The macro was invoked with the use_try_from = true argument. This will eventually become the default behavior of extendr.\n\n#[extendr(use_try_from = true)]\nfn plus_one(x: Rfloat) -&gt; Rfloat { \n    x + 1.0 \n}\n\n\nplus_one(NA_real_)\n\n[1] NA\n\nplus_one(4.2)\n\n[1] 5.2\n\n\nThe combination of these two changes allows us to pass missing values to our plus_one() function and return missing values without raising an error.",
+    "crumbs": [
+      "extendR: User guide",
+      "Using Rust types in R"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html",
+    "href": "heckin-case-converter.html",
+    "title": "A package from start to finish",
+    "section": "",
+    "text": "The Rust crate ecosystem is rich with very small and very powerful utility libraries. One of the most downloaded crates is heck. It provides traits and structs to perform some of the most common case conversions.\nIn this tutorial we’ll create a 0 dependency R package to provide the common case conversions. The resultant R package will be more performant but less flexible than the {snakecase} R package.\nThis tutorial covers:",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html#getting-started",
+    "href": "heckin-case-converter.html#getting-started",
+    "title": "A package from start to finish",
+    "section": "Getting started",
+    "text": "Getting started\nCreate a new R package:\nusethis::create_package(\"heck\")\nWhen the new R package has opened up, add extendr.\nrextendr::use_extendr(crate_name = \"rheck\", lib_name = \"rheck\")\n\n\n\n\n\n\nNote\n\n\n\nWhen adding the extendr dependency, make sure that the crate_name and lib_name arguments are not heck. In order to add the heck crate as a dependency, the crate itself cannot be called heck because it creates a recursive dependency. Doing this allows us to name the R package {heck}, but the internal Rust crate is called rheck.\n\n\nNext, heck is needed as a dependency. From your terminal, navigate to src/rust and run cargo add heck. With this, you have everything you need to get started.",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html#snek-case-conversion",
+    "href": "heckin-case-converter.html#snek-case-conversion",
+    "title": "A package from start to finish",
+    "section": "snek case conversion",
+    "text": "snek case conversion\n\nuse heck::ToSnekCase;\n\nLet’s start by creating a simple function to take a single string, and convert it to snake case. First, the trait ToSnekCase needs to be imported so that the method to_snek_case() is available to &str.\n\nuse heck::ToSnekCase;\n\n#[extendr]\nfn to_snek_case(x: &str) -&gt; String {\n    x.to_snek_case()\n}\n\nSimple enough, right? Let’s give it a shot. To make it accessible from your R session, it needs to be included in your extendr_module! {} macro.\nextendr_module! {\n    mod heck;\n    fn to_snek_case;\n}\nFrom your R session, run rextendr::document() followed by devtools::load_all() to make the function available. We’ll skip these step from now on, but be sure to remember it!\n\nto_snek_case(\"MakeMe-Snake case\")\n\n[1] \"make_me_snake_case\"\n\n\nRarely is it useful to run a function on just a scalar character value. Rust, though, works with scalars by default and adding vectorization is another step.\n\nto_snek_case(c(\"DontStep\", \"on-Snek\"))\n\nError in to_snek_case(c(\"DontStep\", \"on-Snek\")): Not a string object.\n\n\nProviding a character vector causes an error. So how do you go about vectorizing?",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html#vectorizing-snek-case-conversion",
+    "href": "heckin-case-converter.html#vectorizing-snek-case-conversion",
+    "title": "A package from start to finish",
+    "section": "vectorizing snek case conversion",
+    "text": "vectorizing snek case conversion\nTo vectorize this function, you need to be apply the conversion to each element in a character vector. The extendr wrapper struct for a character vector is called Strings. To take in a character vector and also return one, the function signature should look like this:\n#[extendr]\nfn to_snek_case(x: Strings) -&gt; Strings {\n}\nThis says there is an argument x which must be a character vector and this function must also -&gt; return the Strings (a character vector).\nTo iterate through this you can use the .into_iter() method on the character vector.\n#[extendr]\nfn to_snek_case(x: Strings) -&gt; Strings {\n    x\n        .into_iter()\n        // the rest of the function\n}\nIterators have a method called .map() (yes, just like purrr::map()). It lets you apply a closure (an anonymous function) to each element of the iterator. In this case, each element is an Rstr. The Rstr has a method .as_str() which will return a string slice &str. You can take this slice and pass it on to .to_snek_case(). After having mapped over each element, the results are .collect()ed into another Strings.\n\n#[extendr]\nfn to_snek_case(x: Strings) -&gt; Strings {\n    x\n        .into_iter()\n        .map(|xi| {\n            xi.as_str().to_snek_case()\n        })\n        .collect::&lt;Strings&gt;()\n}\n\nThis new version of the function can be used in a vectorized manner:\n\nto_snek_case(c(\"DontStep\", \"on-Snek\"))\n\n[1] \"dont_step\" \"on_snek\"  \n\n\nBut can it handle a missing value out of the box?\n\nto_snek_case(c(\"DontStep\", NA_character_, \"on-Snek\"))\n\n[1] \"dont_step\" \"na\"        \"on_snek\"  \n\n\nWell, sort of. The as_str() method when used on a missing value will return \"NA\" which is not in a user’s best interest.",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html#handling-missing-values",
+    "href": "heckin-case-converter.html#handling-missing-values",
+    "title": "A package from start to finish",
+    "section": "handling missing values",
+    "text": "handling missing values\nInstead of returning \"na\", it would be better to return an actual missing value. Those can be created each scalar’s na() method e.g. Rstr::na().\nYou can modify the .map() statement to check if an NA is present, and, if so, return an NA value. To perform this check, use the is_na() method which returns a bool which is either true or false. The result can be matched. When it is missing, the match arm returns the NA scalar value. When it is not missing, the Rstr is converted to snek case. However, since the true arm is an Rstr the other false arm must also be an Rstr. To accomplish this use the Rstr::from() method.\n\n#[extendr]\nfn to_snek_case(x: Strings) -&gt; Strings {\n    x.into_iter()\n        .map(|xi| match xi.is_na() {\n            true =&gt; Rstr::na(),\n            false =&gt; Rstr::from(xi.as_str().to_snek_case()),\n        })\n        .collect::&lt;Strings&gt;()\n}\n\nThis function can now handle missing values!\n\nto_snek_case(c(\"DontStep\", NA_character_, \"on-Snek\"))\n\n[1] \"dont_step\" NA          \"on_snek\"",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html#automating-other-methods-with-a-macro",
+    "href": "heckin-case-converter.html#automating-other-methods-with-a-macro",
+    "title": "A package from start to finish",
+    "section": "automating other methods with a macro!",
+    "text": "automating other methods with a macro!\nThere are traits for the other case conversions such as ToKebabCase, ToPascalCase, ToShoutyKebabCase and others. The each have a similar method name: .to_kebab_case(), to_pascal_case(), .to_shouty_kebab_case(). You can either choose to copy the above and change the method call multiple times, or use a macro as a form of code generation.\nA macro allows you to generate code in a short hand manner. This macro take an identifier which has a placeholder called $fn_name: $fn_name:ident.\nmacro_rules! make_heck_fn {\n    ($fn_name:ident) =&gt; {\n        #[extendr]\n        /// @export\n        fn $fn_name(x: Strings) -&gt; Strings {\n            x.into_iter()\n                .map(|xi| match xi.is_na() {\n                    true =&gt; Rstr::na(),\n                    false =&gt; Rstr::from(xi.as_str().$fn_name()),\n                })\n                .collect::&lt;Strings&gt;()\n        }\n    };\n}\nThe $fn_name placeholder is put as the function name definition which is the same as the method name. To use this macro to generate the rest of the functions the other traits need to be imported.\n\nuse heck::{\n    ToKebabCase, ToShoutyKebabCase,\n    ToSnekCase, ToShoutySnakeCase,\n    ToPascalCase, ToUpperCamelCase,\n    ToTrainCase, ToTitleCase,\n};\n\nWith the traits in scope, the macro can be invoked to generate the other functions.\nmake_heck_fn!(to_snek_case);\nmake_heck_fn!(to_shouty_snake_case);\nmake_heck_fn!(to_kebab_case);\nmake_heck_fn!(to_shouty_kebab_case);\nmake_heck_fn!(to_pascal_case);\nmake_heck_fn!(to_upper_camel_case);\nmake_heck_fn!(to_train_case);\nmake_heck_fn!(to_title_case);\nNote that each of these functions should be added to the extendr_module! {} macro in order for them to be available from R.\nTest it out with the to_shouty_kebab_case() function!\n\nto_shouty_kebab_case(\"lorem:IpsumDolor__sit^amet\")\n\n[1] \"LOREM-IPSUM-DOLOR-SIT-AMET\"\n\n\nAnd with that, you’ve created an R package that provides case conversion using heck and with very little code!",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html#bench-marking-with-snakecase",
+    "href": "heckin-case-converter.html#bench-marking-with-snakecase",
+    "title": "A package from start to finish",
+    "section": "bench marking with {snakecase}",
+    "text": "bench marking with {snakecase}\nTo illustrate the performance gains from using a vectorized Rust funciton, a bench::mark() is created between to_snek_case() and snakecase::to_snake_case().\nThe bench mark will use 5000 randomly generated lorem ipsum sentences.\n\nx &lt;- unlist(lorem::ipsum(5000, 1, 25))\n\nhead(x)\n\n[1] \"Consectetur montes fames netus odio dis nulla ut habitasse tristique diam ac arcu ante lacus in metus odio sociosqu mattis cras vitae dignissim quis ullamcorper urna dis.\"                                 \n[2] \"Consectetur sapien platea inceptos orci aliquet turpis urna in suscipit bibendum class cubilia pretium tempus tempor eros duis etiam sapien viverra.\"                                                       \n[3] \"Adipiscing mi tortor vitae aenean condimentum magna varius risus netus viverra lobortis habitant nulla ornare sapien dapibus fermentum taciti porttitor luctus odio pharetra lacinia imperdiet a himenaeos.\"\n[4] \"Amet eleifend habitasse malesuada est commodo nulla nullam libero erat vivamus scelerisque curae tortor porta torquent fermentum eget morbi cursus urna consequat ridiculus velit per!\"                     \n[5] \"Elit felis est facilisi ante scelerisque nam per venenatis eu neque cum quisque odio mauris phasellus ante erat potenti ultricies vehicula fames mi nullam montes malesuada.\"                               \n[6] \"Consectetur metus neque egestas tellus vulputate porta primis sociosqu posuere congue facilisis sociosqu ad convallis cras ante dictumst felis libero taciti eu ridiculus sollicitudin nascetur!\"           \n\nbench::mark(\n  rust = to_snek_case(x),\n  snakecase = snakecase::to_snake_case(x)\n)\n\n# A tibble: 2 × 6\n  expression      min   median `itr/sec` mem_alloc `gc/sec`\n  &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;\n1 rust           15ms   16.3ms     61.1     1.16MB     0   \n2 snakecase     249ms  250.2ms      4.00   12.27MB     6.00",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
+    ]
+  },
+  {
+    "objectID": "heckin-case-converter.html#the-whole-thing",
+    "href": "heckin-case-converter.html#the-whole-thing",
+    "title": "A package from start to finish",
+    "section": "The whole thing",
+    "text": "The whole thing\nIn just 42 lines of code (empty lines included), you can create a very performant R package!\nuse extendr_api::prelude::*;\n\nuse heck::{\n    ToKebabCase, ToPascalCase, ToShoutyKebabCase, ToShoutySnakeCase, ToSnekCase, ToTitleCase,\n    ToTrainCase, ToUpperCamelCase,\n};\n\nmacro_rules! make_heck_fn {\n    ($fn_name:ident) =&gt; {\n        #[extendr]\n        /// @export\n        fn $fn_name(x: Strings) -&gt; Strings {\n            x.into_iter()\n                .map(|xi| match xi.is_na() {\n                    true =&gt; Rstr::na(),\n                    false =&gt; Rstr::from(xi.as_str().$fn_name()),\n                })\n                .collect::&lt;Strings&gt;()\n        }\n    };\n}\n\nmake_heck_fn!(to_snek_case);\nmake_heck_fn!(to_shouty_snake_case);\nmake_heck_fn!(to_kebab_case);\nmake_heck_fn!(to_shouty_kebab_case);\nmake_heck_fn!(to_pascal_case);\nmake_heck_fn!(to_upper_camel_case);\nmake_heck_fn!(to_train_case);\nmake_heck_fn!(to_title_case);\n\nextendr_module! {\n    mod heck;\n    fn to_snek_case;\n    fn to_shouty_snake_case;\n    fn to_kebab_case;\n    fn to_shouty_kebab_case;\n    fn to_pascal_case;\n    fn to_upper_camel_case;\n    fn to_title_case;\n    fn to_train_case;\n}",
+    "crumbs": [
+      "extendR: User guide",
+      "A package from start to finish"
     ]
   }
 ]

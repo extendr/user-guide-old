@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://extendr.github.io/user-guide/getting-started.html</loc>
-    <lastmod>2024-04-03T02:36:01.575Z</lastmod>
-  </url>
-  <url>
-    <loc>https://extendr.github.io/user-guide/project-structure.html</loc>
-    <lastmod>2024-04-03T02:36:01.575Z</lastmod>
-  </url>
-  <url>
-    <loc>https://extendr.github.io/user-guide/index.html</loc>
-    <lastmod>2024-04-03T02:36:01.575Z</lastmod>
-  </url>
-  <url>
-    <loc>https://extendr.github.io/user-guide/extendr-macro.html</loc>
-    <lastmod>2024-04-03T02:36:01.575Z</lastmod>
-  </url>
-  <url>
-    <loc>https://extendr.github.io/user-guide/hello-world.html</loc>
-    <lastmod>2024-04-03T02:36:01.575Z</lastmod>
-  </url>
-  <url>
     <loc>https://extendr.github.io/user-guide/data-types.html</loc>
-    <lastmod>2024-04-03T02:36:01.575Z</lastmod>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
   </url>
   <url>
     <loc>https://extendr.github.io/user-guide/conversion.html</loc>
-    <lastmod>2024-04-03T02:36:01.575Z</lastmod>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/project-structure.html</loc>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/index.html</loc>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/getting-started.html</loc>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/hello-world.html</loc>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/extendr-macro.html</loc>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/using-rust-types.html</loc>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://extendr.github.io/user-guide/heckin-case-converter.html</loc>
+    <lastmod>2024-04-09T14:35:29.090Z</lastmod>
   </url>
 </urlset>
