@@ -32,7 +32,7 @@ rextendr::use_extendr(crate_name = "rheck", lib_name = "rheck")
 When adding the extendr dependency, make sure that the `crate_name` and `lib_name` arguments _are not_ `heck`. In order to add the `heck` crate as a dependency, the crate itself cannot be called `heck` because it creates a recursive dependency. Doing this allows us to name the R package `{heck}`, but the internal Rust crate is called `rheck`.
 :::
 
-Next, we need to add `heck` as a dependency. From your terminal, navigate to `src/rust` and run `cargo add heck`. With this, we have everything we need to get started.
+Next, `heck` is needed as a dependency. From your terminal, navigate to `src/rust` and run `cargo add heck`. With this, you have everything you need to get started.
 
 
 ## snek case conversion
@@ -90,7 +90,7 @@ fn to_snek_case(x: Strings) -> Strings {
 }
 ```
 
-This says we have an argument `x` which must be a character vector and this function must also `->` return the `Strings` (a character vector).
+This says there is an argument `x` which must be a character vector and this function must also `->` return the `Strings` (a character vector).
 
 To iterate through this you can use the `.into_iter()` method on the character vector. 
 
@@ -103,7 +103,7 @@ fn to_snek_case(x: Strings) -> Strings {
 }
 ```
 
-Iterators have a method called `.map()` (yes, just like `purrr::map()`). It lets you apply a closure (an anonymous function) to each element of the iterator. In this case, each element is an [`Rstr`](https://extendr.github.io/extendr/extendr_api/wrapper/rstr/struct.Rstr.html). The `Rstr` has a method `.as_str()` which will return a string slice `&str`. We will use this and pass the result to `.to_snek_case()`. After having mapped over each element, the results are `.collect()`ed into another `Strings`. 
+Iterators have a method called `.map()` (yes, just like `purrr::map()`). It lets you apply a closure (an anonymous function) to each element of the iterator. In this case, each element is an [`Rstr`](https://extendr.github.io/extendr/extendr_api/wrapper/rstr/struct.Rstr.html). The `Rstr` has a method `.as_str()` which will return a string slice `&str`. You can take this slice and pass it on to `.to_snek_case()`. After having mapped over each element, the results are `.collect()`ed into another `Strings`. 
 
 
 ```{extendrsrc preamble = "use_heck"}
@@ -230,7 +230,7 @@ And with that, you've created an R package that provides case conversion using h
 
 ## bench marking with `{snakecase}`
 
-To illustrate the performance gains from using a vectorized Rust funciton, we can create a `bench::mark()` between `to_snek_case()` and `snakecase::to_snake_case()` 
+To illustrate the performance gains from using a vectorized Rust funciton, a `bench::mark()` is created between `to_snek_case()` and `snakecase::to_snake_case()`.
 
 ```{r include=FALSE}
 rextendr::rust_source(code = r"(
