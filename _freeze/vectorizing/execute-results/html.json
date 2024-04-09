@@ -1,0 +1,15 @@
+{
+  "hash": "b16ca2e8a639ebb87b23530c0641d845",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Creating vectorized functions\nsubtitle: \"making a heckin' case converter\"\n---\n\n\n\n\n\n\n```rust\nuse heck::ToSnekCase;\n\n#[extendr]\nfn to_lower_snek_case(x: Strings) -> Strings {\n    x.into_iter()\n        .map(|xi| match xi.is_na() {\n            true => Rstr::na(),\n            false => Rstr::from(xi.as_str().to_snek_case()),\n        })\n        .collect::<Strings>()\n}\n```\n\n\n\n\n\nBench mark with the standard snakecase\n\n\n::: {.cell}\n\n```{.r .cell-code}\nx <- unlist(lorem::ipsum(5000, 1, 7))\n\nhead(x)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] \"Lorem cubilia varius felis vestibulum morbi ullamcorper iaculis dapibus.\"\n[2] \"Elit sociosqu fusce porta tortor class non auctor turpis.\"               \n[3] \"Amet nulla per non morbi?\"                                               \n[4] \"Elit proin laoreet donec id cum habitasse dis vitae montes.\"             \n[5] \"Lorem habitasse aliquam libero proin id porta rutrum.\"                   \n[6] \"Lorem cursus velit viverra ultrices volutpat justo.\"                     \n```\n\n\n:::\n\n```{.r .cell-code}\nbench::mark(\n  rust = to_snek_case(x),\n  snakecase = snakecase::to_snake_case(x)\n)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n# A tibble: 2 × 6\n  expression      min   median `itr/sec` mem_alloc `gc/sec`\n  <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>\n1 rust         5.66ms   6.84ms    146.     39.11KB      0  \n2 snakecase  147.75ms 151.97ms      6.48    2.76MB     25.9\n```\n\n\n:::\n:::\n\n\nWe can make a macro to simplify this.\n\nThe whole thing:\n\n```rust\nuse extendr_api::prelude::*; \n\n#[allow(unused_imports)]\nuse heck::{\n    ToKebabCase, ToPascalCase, \n  \tToShoutyKebabCase, ToShoutySnekCase, \n  \tToSnekCase, ToTitleCase,\n    ToTrainCase, ToUpperCamelCase,\n};\n\nmacro_rules! make_heckin_fn {\n    ($fn_name:ident) => {\n        #[extendr]\n        fn $fn_name(x: Strings) -> Strings {\n            x.into_iter()\n                .map(|xi| match xi.is_na() {\n                    true => Rstr::na(),\n                    false => Rstr::from(xi.as_str().to_snek_case()),\n                })\n                .collect::<Strings>()\n        }\n    };\n}\n\nmake_heckin_fn!(to_kebab_case);\nmake_heckin_fn!(to_shouty_kebab_case);\nmake_heckin_fn!(to_snek_case);\nmake_heckin_fn!(to_shouty_snek_case);\nmake_heckin_fn!(to_pascal_case);\nmake_heckin_fn!(to_upper_camel_case);\nmake_heckin_fn!(to_train_case);\nmake_heckin_fn!(to_title_case);\n\nextendr_module! {\n    mod heckin;\n    fn hello_world;\n    fn parse_post;\n    fn to_snek_case;\n    fn to_shouty_snek_case;\n    fn to_kebab_case;\n    fn to_shouty_kebab_case;\n    fn to_pascal_case;\n    fn to_upper_camel_case;\n    fn to_title_case;\n    fn to_train_case;\n}\n```",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
