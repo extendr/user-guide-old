@@ -133,7 +133,9 @@ Of course, a slice e.g. `&[i32]` / `&mut [i32]` could be used instead, and this 
 
 ```{extendrsrc}
 #[extendr]
-fn zero_middle_element(values: &mut [i32]) {
+fn zero_middle_element(mut values: Robj) {
+    use extendr_api::AsTypedSlice;
+    let values: &mut [i32] = values.as_typed_slice_mut().unwrap();
     let len = values.len();
     let middle = len / 2;
     values[middle] = 0;
