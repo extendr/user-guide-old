@@ -264,7 +264,7 @@ These extendr types, however, can be utilized much like a normal `f64` that is `
 `f64` with the extendr type `Rfloat`. Since `Rfloat` maps to a scalar value and not vector, the conversion needs to be handled more delicately. The macro was invoked with the `use_try_from = true` argument. This will eventually become the default behavior of extendr. 
 
 ```{extendrsrc}
-#[extendr(use_try_from = true)]
+#[extendr]
 fn plus_one(x: Rfloat) -> Rfloat { 
     x + 1.0 
 }
