@@ -156,7 +156,15 @@ A slice is a representation of a sequence of elements that are part of a larger 
 
 The R runtime performs [string interning](https://en.wikipedia.org/wiki/String_interning) to
 all of its string elements. This means, that whenever R encounters a new string,
-it adds it to its internal string intern pool. Let's look at a concrete example:
+it adds it to its internal string intern pool. 
+
+::: {.callout-tip }
+A string intern pool can be thought of as a container that stores all distinct
+strings, and then provides a lightweight reference counted variable back to it.
+An example of such a string interner is the [`lasso`](https://crates.io/crates/lasso) crate.
+:::
+
+Let's look at a concrete example:
 
 ```{extendrsrc}
 #[extendr]
